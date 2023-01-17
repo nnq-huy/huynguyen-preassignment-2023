@@ -1,6 +1,9 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const upload = require("./file_upload.js")
+
+const upload = require("./file_upload.js");
+const db = require("./db_queries");
+
 
 require("dotenv").config();
 
@@ -25,6 +28,9 @@ app.get("/", (request, response) => {
 });
 //csv file upload route
 app.post("/upload/:uploadType", upload.uploadFile.single('file'),upload.uploadCsv);
+
+//db queries routes
+app.post("/db",db.initializeDB);
 
 app.listen(PORT, () => {
   console.log(`App running on port ${PORT}. Go to http://localhost:3000/`);
