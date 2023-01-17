@@ -79,8 +79,8 @@ const parseJourneys = () => {
     .validate((row, cb) => {
       const isDepartureValid = Date.parse(row.departure) !== null;
       const isReturnValid =
-        Date.parse(row.return) !== null &&
-        Date.parse(row.return) > Date.parse(row.departure);
+        Date.parse(row.return_time) !== null &&
+        Date.parse(row.return_time) > Date.parse(row.departure_time);
       const isIdValid =
         row.departure_station_id > 0 && row.return_station_id > 0;
       const isDurationDistanceValid = row.distance > 10 && row.duration > 10;
