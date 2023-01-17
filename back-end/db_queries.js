@@ -16,7 +16,7 @@ tables journeys have departure_station_id and return_station_id as foreign key c
 */
 const initializeDB = (request, response) => {
   pool.query(
-    "CREATE TABLE IF NOT EXISTS stations (id INTEGER PRIMARY KEY,name VARCHAR(255),address VARCHAR(255),x REAL,y REAL); CREATE TABLE IF NOT EXISTS journeys (id SERIAL PRIMARY KEY, departure_time TIMESTAMP, return_time TIMESTAMP,departure_station_id INTEGER, departure_station VARCHAR(255), return_station_id INTEGER, return_station VARCHAR(255), distance REAL, duration REAL, FOREIGN KEY(departure_station_id, return_station_id) REFERENCES stations(id))",
+    "CREATE TABLE IF NOT EXISTS stations (id INTEGER PRIMARY KEY,name VARCHAR(255),address VARCHAR(255),x REAL,y REAL); CREATE TABLE IF NOT EXISTS journeys (id SERIAL PRIMARY KEY, departure_time TIMESTAMP, return_time TIMESTAMP,departure_station_id INTEGER REFERENCES stations(id), departure_station VARCHAR(255), return_station_id INTEGER REFERENCES stations(id), return_station VARCHAR(255), distance REAL, duration REAL)",
     (error, result) => {
       if (error) {
         throw response.status(405).send(error);

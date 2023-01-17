@@ -26,7 +26,7 @@ app.get("/", (request, response) => {
     info: "Back-end running on Node.js, Express, and PostgresSQL",
   });
 });
-//csv file upload route
+//csv file upload route: stations or journeys
 app.post("/upload/:uploadType", upload.uploadFile.single('file'),upload.uploadCsv);
 
 //db queries routes

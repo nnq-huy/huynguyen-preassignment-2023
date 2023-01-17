@@ -6,7 +6,7 @@ const fs = require("fs");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    let dir = `/csv`; // file path for csv files
+    let dir = `./csv/`; // file path for csv files
     //check if file path exists or create the directory
     fs.access(dir, function (error) {
       if (error) {
