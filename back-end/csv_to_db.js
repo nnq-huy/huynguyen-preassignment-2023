@@ -3,8 +3,6 @@ using fast-csv as csv file parser and pg-promise as bulk db transaction handler 
 
 const fs = require("fs");
 const fastcsv = require("fast-csv");
-const { request } = require("http");
-const { response } = require("express");
 const pgp = require("pg-promise")({ capSQL: true });
 
 //postgres connection details

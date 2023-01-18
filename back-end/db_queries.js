@@ -27,4 +27,65 @@ const initializeDB = (request, response) => {
   );
 };
 
-module.exports={initializeDB}
+//get all the stations, return a json list ordered by id
+const getStations = (request, response) => {
+  pool.query("SELECT * FROM stations ORDER by id", (error, results) => {
+    if (error) {
+      throw response.status(404).send("Data not found");
+    }
+    response.status(200).json(results.rows);
+  });
+};
+
+//get all journeys starting from a station
+const getJourneysByDepartureStation = (request, response) => {
+  const departure_station_id = request.params.dep_station_id;
+  pool.query(
+    "SELECT * FROM journeys WHERE departure_station_id=$1",
+    [departure_station_id],
+    (error, results) => {
+      if (error) {
+        throw response.status(404).send("Data not found");
+      }
+      response.status(200).json(results.rows);
+    }
+  );
+};
+
+//get all journeys ending at a station
+const getJourneysByReturnStation = (request, response) => {
+  const return_station_id = request.params.return_station_id;
+  pool.query(
+    "SELECT * FROM journeys WHERE return_station_id=$1",
+    [return_station_id],
+    (error, results) => {
+      if (error) {
+        throw response.status(404).send("Data not found");
+      }
+      response.status(200).json(results.rows);
+    }
+  );
+};
+
+//count the number of trips starting & ending from a station, return a json object with departure_count & return_count
+const countJourneyByStation = (request, response) => {
+  const station_id = request.params.station_id;
+  pool.query(
+    "SELECT SUM(CASE WHEN departure_station_id = $1 THEN 1 ELSE 0 END) as departure_count, SUM(CASE WHEN return_station_id = $1 THEN 1 ELSE 0 END) as return_count FROM journeys",
+    [station_id],
+    (error, result) => {
+      if (error) {
+        throw response.status(404).send("Data not found");
+      }
+      response.status(200).json(result.rows);
+    }
+  );
+};
+
+module.exports = {
+  initializeDB,
+  getStations,
+  getJourneysByDepartureStation,
+  getJourneysByReturnStation,
+  countJourneyByStation,
+};

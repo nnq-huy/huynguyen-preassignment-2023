@@ -6,6 +6,7 @@ const db = require("./db_queries");
 const { pushCsvToDb } = require("./csv_to_db.js");
 
 
+
 require("dotenv").config();
 
 //express init
@@ -33,9 +34,13 @@ app.post("/upload/:uploadType", upload.uploadFile.single('file'),upload.uploadCs
 
 //csv file parsing route
 app.post("/csv/:importType", pushCsvToDb)
-//db queries routes
-app.post("/db",db.initializeDB);
 
+//db queries routes:
+app.post("/db",db.initializeDB);
+app.get("/stations",db.getStations); //get all stations
+app.get("/journeys/departure=:departure_station_id", db.getJourneysByDepartureStation); //get all journeys starting at a station
+app.get("/journeys/return=:return_station_id", db.getJourneysByReturnStation);//get all journeys ending at a station
+app.get("/journeys/count/station=:station_id", db.countJourneyByStation); //get a count of journeys starting & ending at a station
 
 app.listen(PORT, () => {
   console.log(`App running on port ${PORT}. Go to http://localhost:3000/`);
