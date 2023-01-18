@@ -8,84 +8,135 @@ const cn = {
 };
 //initialize new db connection pool
 const pool = new Pool(cn);
-
+/* the pool will emit an error on behalf of any idle clients
+it contains if a backend error or network partition happens */
+pool.on("error", (err, client) => {
+  console.error("Unexpected error on idle client", err);
+  process.exit(-1);
+});
 /* create stations + journeys table in postgres
 Table stations has 5 columns: id, name, address, x, y
 Table journeys has 9 columns: id, departure_time, return_time, departure_station_id, departure_station, return_station_id, return_station, distance, duration
 */
-const initializeDB = (request, response) => {
-  pool.query(
-    "CREATE TABLE IF NOT EXISTS stations (id INTEGER PRIMARY KEY,name VARCHAR(255),address VARCHAR(255),x REAL,y REAL); CREATE TABLE IF NOT EXISTS journeys (id SERIAL PRIMARY KEY, departure_time TIMESTAMP, return_time TIMESTAMP,departure_station_id INTEGER, departure_station VARCHAR(255), return_station_id INTEGER, return_station VARCHAR(255), distance REAL, duration REAL)",
-    (error, result) => {
-      if (error) {
-        throw response.status(405).send(error);
-      }
-      response
-        .status(201)
-        .send("Tables successfully created. / Tables existed.");
-    }
-  );
+const initializeDB = async (request, response) => {
+  const client = await pool.connect();
+  try {
+    const results = await client.query(
+      "CREATE TABLE IF NOT EXISTS stations (id INTEGER PRIMARY KEY,name VARCHAR(255),address VARCHAR(255),x REAL,y REAL); CREATE TABLE IF NOT EXISTS journeys (id SERIAL PRIMARY KEY, departure_time TIMESTAMP, return_time TIMESTAMP,departure_station_id INTEGER, departure_station VARCHAR(255), return_station_id INTEGER, return_station VARCHAR(255), distance REAL, duration REAL)"
+    );
+    response.status(201).send("Tables successfully created. / Tables existed.");
+  } catch (err) {
+    response.status(405).send(err);
+  } finally {
+    client.release();
+  }
 };
 
 //get all the stations, return a json list ordered by id
-const getStations = (request, response) => {
-  pool.query("SELECT * FROM stations ORDER by id", (error, results) => {
-    if (error) {
-      throw response.status(404).send("Data not found");
-    }
+const getStations = async (request, response) => {
+  const client = await pool.connect();
+  try {
+    const results = await client.query("SELECT * FROM stations ORDER by id");
     response.status(200).json(results.rows);
-  });
+  } catch (err) {
+    response.status(404).send("Data not found");
+  } finally {
+    client.release();
+  }
 };
 
 //get all journeys starting from a station
-const getJourneysByDepartureStation = (request, response) => {
+const getJourneysByDepartureStation = async (request, response) => {
   const departure_station_id = request.params.dep_station_id;
-  pool.query(
-    "SELECT * FROM journeys WHERE departure_station_id=$1",
-    [departure_station_id],
-    (error, results) => {
-      if (error) {
-        throw response.status(404).send("Data not found");
-      }
-      response.status(200).json(results.rows);
-    }
-  );
+  const client = await pool.connect();
+  try {
+    const results = await client.query(
+      "SELECT * FROM journeys WHERE departure_station_id=$1",
+      [departure_station_id]
+    );
+    response.status(200).json(results.rows);
+  } catch (err) {
+    response.status(404).send("Data not found: " + err);
+  } finally {
+    client.release();
+  }
 };
-
 //get all journeys ending at a station
-const getJourneysByReturnStation = (request, response) => {
+const getJourneysByReturnStation = async (request, response) => {
   const return_station_id = request.params.return_station_id;
-  pool.query(
-    "SELECT * FROM journeys WHERE return_station_id=$1",
-    [return_station_id],
-    (error, results) => {
-      if (error) {
-        throw response.status(404).send("Data not found");
-      }
-      response.status(200).json(results.rows);
-    }
-  );
+  const client = await pool.connect();
+  try {
+    const results = await client.query(
+      "SELECT * FROM journeys WHERE return_station_id=$1",
+      [return_station_id]
+    );
+    response.status(200).json(results.rows);
+  } catch (err) {
+    response.status(404).send("Data not found: " + err);
+  } finally {
+    client.release();
+  }
 };
 
-//count the number of trips starting & ending from a station, return a json object with departure_count & return_count
-const countJourneyByStation = (request, response) => {
+/* get all information for a station: name, address, lat,long, total number of journeys starting/ending from the station,
+average distance of a starting/ending journey, 5 most popular return/departure stations for journeys starting/ending from the station
+*/
+const getStationInfo = async (request, response) => {
   const station_id = request.params.station_id;
-  pool.query(
-    "SELECT SUM(CASE WHEN departure_station_id = $1 THEN 1 ELSE 0 END) as departure_count, SUM(CASE WHEN return_station_id = $1 THEN 1 ELSE 0 END) as return_count FROM journeys",
-    [station_id],
-    (error, result) => {
-      if (error) {
-        throw response.status(404).send("Data not found");
-      }
-      response.status(200).json(result.rows);
+  const client = await pool.connect();
+  let station = {
+    id: 0,
+    name: "a",
+    address: "a",
+    x: 0.0,
+    y: 0.0,
+    departure_count: 0,
+    return_count: 0,
+    avg_starting_dist: 0,
+    avg_ending_dist: 0,
+    most_popular_return: [],
+    most_popular_departure: [],
+  };
+  const query_basic_info = {
+    text: "SELECT * FROM stations WHERE id = $1",
+    values: [station_id],
+  };
+  const query_avg_starting_dist = {
+    text: "SELECT AVG(distance) as avg_starting_dist FROM journeys WHERE departure_station_id = $1",
+    values: [station_id],
+  };
+  const query_avg_ending_dist = {
+    text: "SELECT AVG(distance) as avg_ending_dist FROM journeys WHERE return_station_id = $1",
+    values: [station_id],
+  };
+  const query_count_journeys = {
+    text: "SELECT SUM(CASE WHEN departure_station_id = $1 THEN 1 ELSE 0 END) as departure_count, SUM(CASE WHEN return_station_id = $1 THEN 1 ELSE 0 END) as return_count FROM journeys",
+    values: [station_id],
+  };
+  const queries = [
+    query_basic_info,
+    query_count_journeys,
+    query_avg_starting_dist,
+    query_avg_ending_dist,
+  ];
+
+  try {
+    for (let i = 0; i < queries.length; i++) {
+      const result = await client.query(queries[i]);
+      station = { ...station, ...result.rows[0] };
     }
-  );
+  } catch (err) {
+    console.log(err.stack);
+  } finally {
+    client.release();
+  }
+  response.status(200).json(station);
 };
 
 module.exports = {
   initializeDB,
   getStations,
+  getStationInfo,
   getJourneysByDepartureStation,
   getJourneysByReturnStation,
-  countJourneyByStation,
 };
