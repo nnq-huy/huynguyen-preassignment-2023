@@ -28,7 +28,11 @@ app.get("/", (request, response) => {
     info: "Back-end running on Node.js, Express, and PostgresSQL",
   });
 });
-
+app.get("/exit",(request, response)=>{
+  response.send("Exiting NodeJS server");
+  console.log("Exiting NodeJS server");
+    process.exit();
+})
 //csv file upload route: stations or journeys
 app.post("/upload/:uploadType", upload.uploadFile.single('file'),upload.uploadCsv);
 
