@@ -1,4 +1,5 @@
 const Pool = require("pg").Pool;
+//postgres connection detail from .env file
 const cn = {
   user: process.env.PGUSER,
   host: process.env.PGHOST,
@@ -47,11 +48,11 @@ const getStations = async (request, response) => {
 
 //get all journeys starting from a station
 const getJourneysByDepartureStation = async (request, response) => {
-  const departure_station_id = request.params.dep_station_id;
+  const departure_station_id = request.params.departure_station_id;
   const client = await pool.connect();
   try {
     const results = await client.query(
-      "SELECT * FROM journeys WHERE departure_station_id=$1",
+      "SELECT * FROM journeys WHERE departure_station_id=$1 ORDER by departure_time",
       [departure_station_id]
     );
     response.status(200).json(results.rows);
@@ -67,7 +68,7 @@ const getJourneysByReturnStation = async (request, response) => {
   const client = await pool.connect();
   try {
     const results = await client.query(
-      "SELECT * FROM journeys WHERE return_station_id=$1",
+      "SELECT * FROM journeys WHERE return_station_id=$1 ORDER by return_time",
       [return_station_id]
     );
     response.status(200).json(results.rows);
