@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import React from "react";
+import MapView, { Marker } from "react-native-maps";
 import { View, Text, StyleSheet } from "react-native";
 import { ActivityIndicator, Card } from "react-native-paper";
 import backendUrl from "../utils/backend";
@@ -86,6 +87,17 @@ const StationDetail = ({ route, navigation }) => {
             {data.avg_ending_dist}
           </Text>
         </Card.Content>
+        <MapView
+          style={styles.map}
+          initialRegion={{
+            latitude: y,
+            longitude: x,
+            latitudeDelta: 0.0092,
+            longitudeDelta: 0.0042,
+          }}
+        >
+          <Marker coordinate={{ latitude: y, longitude: x }} />
+        </MapView>
       </Card>
     </View>
   );
@@ -103,5 +115,9 @@ const styles = StyleSheet.create({
   },
   address: {
     fontSize: 10,
+  },
+  map: {
+    width: "100%",
+    height: "50%",
   },
 });
