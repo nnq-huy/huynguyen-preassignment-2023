@@ -4,6 +4,7 @@ import React from "react";
 import { View, FlatList, Text, StyleSheet } from "react-native";
 import { ActivityIndicator, Avatar, Card } from "react-native-paper";
 import backendUrl from "../utils/backend";
+import axios from "axios";
 
 const useGetStation = (url: string) => {
   const [data, setData] = useState<any>(null);
@@ -13,9 +14,9 @@ const useGetStation = (url: string) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(url);
-        const json = await response.json();
-        setData(json);
+        const response = await axios.get(url);
+        ///const json = await response.json();
+        setData(response.data);
       } catch (e) {
         setError(e);
       } finally {

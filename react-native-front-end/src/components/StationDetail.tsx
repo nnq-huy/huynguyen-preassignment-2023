@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import React from "react";
+import axios from "axios";
 import MapView, { Marker } from "react-native-maps";
 import { View, Text, StyleSheet } from "react-native";
 import { ActivityIndicator, Card } from "react-native-paper";
@@ -13,9 +14,8 @@ const useGetStationInfo = (url: string) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(url);
-        const json = await response.json();
-        setData(json);
+        const response = await axios.get(url);
+        setData(response.data);
       } catch (e) {
         setError(e);
       } finally {
@@ -117,6 +117,7 @@ const styles = StyleSheet.create({
     fontSize: 10,
   },
   map: {
+    paddingTop:10,
     width: "100%",
     height: "50%",
   },
