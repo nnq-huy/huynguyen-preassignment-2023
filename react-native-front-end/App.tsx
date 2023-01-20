@@ -5,6 +5,7 @@ import { BottomNavigation } from "react-native-paper";
 
 import { HomeScreen, JourneyScreen, StationScreen } from "./src/screens";
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
+import { NavigationContainer } from '@react-navigation/native';
 
 export default function App() {
   const [index, setIndex] = React.useState(0);
@@ -25,6 +26,7 @@ export default function App() {
     journey: JourneyScreen,
   });
   return (
+    <NavigationContainer>
     <SafeAreaProvider>
       <BottomNavigation
         navigationState={{ index, routes }}
@@ -33,6 +35,7 @@ export default function App() {
       />
       <StatusBar style="auto" />
     </SafeAreaProvider>
+    </NavigationContainer>
   );
 }
 
