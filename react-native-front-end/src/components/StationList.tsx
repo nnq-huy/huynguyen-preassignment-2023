@@ -33,28 +33,30 @@ interface Station {
   id: number;
   name: string;
   address: string;
+  x: number;
+  y: number;
 }
 
-const Item = ({ data }: { data: Station }) => (
-  <Card style={styles.card} onPress={()=>{}}>
-    <Card.Title
-      title={data.name}
-      titleStyle={styles.title}
-      subtitle={data.address}
-      subtitleStyle={styles.subtitle}
-      right={(props: any) => (
-        <Avatar.Text
-          {...props}
-          size={32}
-          style={styles.avatar}
-          label={data.id.toString()}
-        />
-      )}
-    />
-  </Card>
-);
+const StationList = ({navigation}) => {
+  const Item = ({ data }: { data: Station }) => (
+    <Card style={styles.card} onPress={() => navigation.navigate('Details', {id:data.id, name: data.name, address:data.address, x:data.x, y:data.y})}>
+      <Card.Title
+        title={data.name}
+        titleStyle={styles.title}
+        subtitle={data.address}
+        subtitleStyle={styles.subtitle}
+        right={(props: any) => (
+          <Avatar.Text
+            {...props}
+            size={32}
+            style={styles.avatar}
+            label={data.id.toString()}
+          />
+        )}
+      />
+    </Card>
+  );
 
-const StationList = () => {
   const { data, loading, error } = useGetStation(backendUrl + "/stations");
   if (error) {
     return <Text>{error.toString()}</Text>;
@@ -67,9 +69,9 @@ const StationList = () => {
         data={data}
         renderItem={({ item }) => <Item data={item} />}
         keyExtractor={(item: Station) => item.id.toString()}
-        getItemLayout={(data, index) => (
+        /* getItemLayout={(data, index) => (
             {length: 10, offset: 10* index, index}
-          )}
+          )} */
       />
     </View>
   );
