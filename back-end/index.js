@@ -42,6 +42,7 @@ app.post("/csv/:importType", pushCsvToDb)
 //db queries routes:
 app.post("/db",db.initializeDB);
 app.get("/stations",db.getStations);//get all stations
+app.get("/journeys",db.getJourneys);//get all journeys
 app.get("/station/id=:station_id",db.getStationInfo)//get station infos
 app.get("/journeys/departure=:departure_station_id", db.getJourneysByDepartureStation); //get all journeys starting at a station
 app.get("/journeys/return=:return_station_id", db.getJourneysByReturnStation);//get all journeys ending at a station

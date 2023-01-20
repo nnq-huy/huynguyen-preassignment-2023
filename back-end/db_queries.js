@@ -45,7 +45,18 @@ const getStations = async (request, response) => {
     client.release();
   }
 };
-
+//get all journeys: limit 1000
+const getJourneys = async (request, response) => {
+  const client = await pool.connect();
+  try {
+    const results = await client.query("SELECT id, departure_station, return_station, distance, duration FROM journeys LIMIT 1000");
+    response.status(200).json(results.rows);
+  } catch (err) {
+    response.status(404).send("Data not found");
+  } finally {
+    client.release();
+  }
+};
 //get all journeys starting from a station
 const getJourneysByDepartureStation = async (request, response) => {
   const departure_station_id = request.params.departure_station_id;
@@ -137,6 +148,7 @@ const getStationInfo = async (request, response) => {
 module.exports = {
   initializeDB,
   getStations,
+  getJourneys,
   getStationInfo,
   getJourneysByDepartureStation,
   getJourneysByReturnStation,
