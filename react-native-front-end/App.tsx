@@ -1,11 +1,14 @@
 import React from "react";
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet } from "react-native";
-import { BottomNavigation } from "react-native-paper";
+import {
+  BottomNavigation,
+  Provider as PaperProvider,
+} from "react-native-paper";
 
 import { HomeScreen, JourneyScreen, StationScreen } from "./src/screens";
-import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
-import { NavigationContainer } from '@react-navigation/native';
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import { NavigationContainer } from "@react-navigation/native";
 
 export default function App() {
   const [index, setIndex] = React.useState(0);
@@ -27,14 +30,16 @@ export default function App() {
   });
   return (
     <NavigationContainer>
-    <SafeAreaProvider>
-      <BottomNavigation
-        navigationState={{ index, routes }}
-        onIndexChange={setIndex}
-        renderScene={renderScene}
-      />
-      <StatusBar style="auto" />
-    </SafeAreaProvider>
+      <SafeAreaProvider>
+        <PaperProvider>
+          <BottomNavigation
+            navigationState={{ index, routes }}
+            onIndexChange={setIndex}
+            renderScene={renderScene}
+          />
+          <StatusBar style="auto" />
+        </PaperProvider>
+      </SafeAreaProvider>
     </NavigationContainer>
   );
 }
