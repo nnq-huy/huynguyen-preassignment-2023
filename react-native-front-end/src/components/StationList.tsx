@@ -5,6 +5,7 @@ import { View, FlatList, Text, StyleSheet } from "react-native";
 import { ActivityIndicator, Avatar, Card } from "react-native-paper";
 import backendUrl from "../utils/backend";
 import axios from "axios";
+import { Station } from "../utils/types";
 
 const useGetStation = (url: string) => {
   const [data, setData] = useState<any>(null);
@@ -30,13 +31,7 @@ const useGetStation = (url: string) => {
   return { data, loading, error };
 };
 
-interface Station {
-  id: number;
-  name: string;
-  address: string;
-  x: number;
-  y: number;
-}
+
 
 const StationList = ({navigation}) => {
   const Item = ({ data }: { data: Station }) => (
