@@ -183,6 +183,7 @@ const createJourney = async (request, response) => {
 };
 //create new station based on json object from request body
 const createStation = async (request, response) => {
+  const client = await pool.connect();
   const { id, name, address, x, y } = request.body;
   const query = {
     text: "INSERT INTO stations ( id, name, address, x, y) VALUES ($1, $2, $3, $4, $5) RETURNING id",
