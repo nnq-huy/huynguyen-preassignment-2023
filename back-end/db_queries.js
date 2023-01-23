@@ -147,7 +147,8 @@ const getStationInfo = async (request, response) => {
   response.status(200).json(station);
 };
 //create new journey based on json object from request body
-const createJourney = (request, response) => {
+const createJourney = async (request, response) => {
+  const client = await pool.connect();
   const {
     departure_time,
     return_time,
@@ -158,10 +159,9 @@ const createJourney = (request, response) => {
     distance,
     duration,
   } = request.body;
-
-  pool.query(
-    "INSERT INTO journeys ( departure_time, return_time, depparture_station_id, depparture_station, return_station_id, return_station, distance, duration,) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id",
-    [
+  const query = {
+    text: "INSERT INTO journeys ( departure_time, return_time, depparture_station_id, depparture_station, return_station_id, return_station, distance, duration,) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id",
+    values: [
       departure_time,
       return_time,
       depparture_station_id,
@@ -171,27 +171,31 @@ const createJourney = (request, response) => {
       distance,
       duration,
     ],
-    (error, results) => {
-      if (error) {
-        throw response.status(405).send("Cannot add a new entry");
-      }
-      response.status(201).send("Journey added with ID:" + results.rows[0].id);
-    }
-  );
+  };
+  try {
+    const results = await client.query(query);
+    response.status(201).send("Journey added with ID:" + results.rows[0].id);
+  } catch (err) {
+    response.status(405).send("Cannot add a new entry" + err);
+  } finally {
+    client.release();
+  }
 };
 //create new station based on json object from request body
-const createStation = (request, response) => {
+const createStation = async (request, response) => {
   const { id, name, address, x, y } = request.body;
-  pool.query(
-    "INSERT INTO stations ( id, name, address, x, y) VALUES ($1, $2, $3, $4, $5) RETURNING id",
-    [id, name, address, x, y],
-    (error, results) => {
-      if (error) {
-        throw response.status(405).send("Cannot add a new entry");
-      }
-      response.status(201).send("Station added with ID:" + results.rows[0].id);
-    }
-  );
+  const query = {
+    text: "INSERT INTO stations ( id, name, address, x, y) VALUES ($1, $2, $3, $4, $5) RETURNING id",
+    values: [id, name, address, x, y],
+  };
+  try {
+    const results = await client.query(query);
+    response.status(201).send("Station added with ID:" + results.rows[0].id);
+  } catch (err) {
+    response.status(405).send("Cannot add a new entry" + err);
+  } finally {
+    client.release();
+  }
 };
 module.exports = {
   createJourney,
