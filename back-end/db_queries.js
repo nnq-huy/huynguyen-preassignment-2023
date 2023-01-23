@@ -49,7 +49,7 @@ const getStations = async (request, response) => {
 const getJourneys = async (request, response) => {
   const client = await pool.connect();
   try {
-    const results = await client.query("SELECT id, departure_station, return_station, distance, duration FROM journeys LIMIT 1000");
+    const results = await client.query("SELECT id, departure_station, return_station, distance, duration FROM journeys LIMIT 100000");
     response.status(200).json(results.rows);
   } catch (err) {
     response.status(404).send("Data not found");
@@ -144,7 +144,39 @@ const getStationInfo = async (request, response) => {
   }
   response.status(200).json(station);
 };
+//create new journey based on json object from request body
+const createJourney = (request, response) => {
+  const {
+    departure_time,
+    return_time,
+    depparture_station_id,
+    depparture_station,
+    return_station_id,
+    return_station,
+    distance,
+    duration,
+  } = request.body;
 
+  pool.query(
+    "INSERT INTO journeys ( departure_time, return_time, depparture_station_id, depparture_station, return_station_id, return_station, distance, duration,) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id",
+    [
+      departure_time,
+      return_time,
+      depparture_station_id,
+      depparture_station,
+      return_station_id,
+      return_station,
+      distance,
+      duration,
+    ],
+    (error, results) => {
+      if (error) {
+        throw response.status(405).send("Cannot add a new entry");
+      }
+      response.status(201).send("Journey added with ID:" + results.rows[0].id);
+    }
+  );
+};
 module.exports = {
   initializeDB,
   getStations,
