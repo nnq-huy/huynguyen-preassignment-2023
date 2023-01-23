@@ -8,7 +8,7 @@ import backendUrl from "../utils/backend";
 import { Station , StationInfo} from "../utils/types";
 
 const useGetStationInfo = (url: string) => {
-  const [data, setData] = useState<Station>(emptyStation);
+  const [data, setData] = useState<StationInfo>(emptyStation);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<any>(null);
 
