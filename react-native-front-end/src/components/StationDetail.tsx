@@ -5,6 +5,7 @@ import MapView, { Marker } from "react-native-maps";
 import { View, Text, StyleSheet } from "react-native";
 import { ActivityIndicator, Card } from "react-native-paper";
 import backendUrl from "../utils/backend";
+import { Station , StationInfo} from "../utils/types";
 
 const useGetStationInfo = (url: string) => {
   const [data, setData] = useState<Station>(emptyStation);
@@ -28,7 +29,7 @@ const useGetStationInfo = (url: string) => {
 
   return { data, loading, error };
 };
-const emptyStation: Station = {
+const emptyStation: StationInfo = {
   id: 0,
   name: "a",
   address: "a",
@@ -41,19 +42,6 @@ const emptyStation: Station = {
   most_popular_return: [],
   most_popular_departure: [],
 };
-interface Station {
-  id: number;
-  name: string;
-  address: string;
-  x: number;
-  y: number;
-  departure_count: number;
-  return_count: number;
-  avg_starting_dist: number;
-  avg_ending_dist: number;
-  most_popular_return: Array<String>;
-  most_popular_departure: Array<String>;
-}
 
 const StationDetail = ({ route, navigation }) => {
   const { id, name, address, x, y } = route.params;
@@ -117,7 +105,7 @@ const styles = StyleSheet.create({
     fontSize: 10,
   },
   map: {
-    paddingTop:10,
+    paddingTop: 10,
     width: "100%",
     height: "50%",
   },
