@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
     marginTop:20,
     paddingTop: 20,
     width: "100%",
-    height: "50%",
+    height: "65%",
   },
   subtitle: {
     fontSize: 12,
