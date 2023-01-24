@@ -55,9 +55,9 @@ const StationList = ({navigation}) => {
 
   const { data, loading, error } = useGetStation(backendUrl + "/stations");
   if (error) {
-    return <Text>{error.toString()}</Text>;
+    return <View style={styles.container}><Text>{error.toString()}</Text></View>;
   } else if (loading) {
-    return <ActivityIndicator animating={true} color={"EFA3C8"} size="large" />;
+    return <View style={styles.container}><ActivityIndicator animating={true} color={"#EFA3C8"} size="large" /></View>;
   }
   return (
     <View>
@@ -76,23 +76,30 @@ const StationList = ({navigation}) => {
 export default StationList;
 
 const styles = StyleSheet.create({
+  address: {
+    fontSize: 10,
+  },
   avatar: { margin: 8 },
   card: { margin: 4, flex: 1, minWidth: 350 },
+  container: {
+    flex:1,
+    backgroundColor: "#f8f8f8",
+    alignItems: "center",
+    justifyContent:"center"
+  },
   item: {
     backgroundColor: "#f9c2ff",
     padding: 20,
     marginVertical: 8,
     marginHorizontal: 16,
   },
-  title: {
-    fontSize: 16,
-    fontWeight: "bold",
-  },
   subtitle: {
     fontSize: 12,
     fontWeight: "100",
   },
-  address: {
-    fontSize: 10,
+  title: {
+    fontSize: 16,
+    fontWeight: "bold",
   },
+
 });

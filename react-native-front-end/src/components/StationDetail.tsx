@@ -5,7 +5,7 @@ import MapView, { Marker } from "react-native-maps";
 import { View, Text, StyleSheet } from "react-native";
 import { ActivityIndicator, Card } from "react-native-paper";
 import backendUrl from "../utils/backend";
-import { Station , StationInfo} from "../utils/types";
+import { Station, StationInfo } from "../utils/types";
 
 const useGetStationInfo = (url: string) => {
   const [data, setData] = useState<StationInfo>(emptyStation);
@@ -49,9 +49,13 @@ const StationDetail = ({ route, navigation }) => {
     backendUrl + "/station/id=" + id
   );
   if (error) {
-    return <Text>{error.toString()}</Text>;
+    return <View style={styles.container}><Text>{error.toString()}</Text></View>;
   } else if (loading) {
-    return <ActivityIndicator animating={true} color={"EFA3C8"} size="large" />;
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator animating={true} color={"#EFA3C8"} size="large" />
+      </View>
+    );
   }
   return (
     <View>
@@ -93,20 +97,27 @@ const StationDetail = ({ route, navigation }) => {
 
 export default StationDetail;
 const styles = StyleSheet.create({
-  title: {
-    fontSize: 18,
-    fontWeight: "bold",
+  address: {
+    fontSize: 10,
+  },
+  container: {
+    flex:1,
+    backgroundColor: "#f8f8f8",
+    alignItems: "center",
+    justifyContent:"center"
+  },
+  map: {
+    marginTop:20,
+    paddingTop: 20,
+    width: "100%",
+    height: "50%",
   },
   subtitle: {
     fontSize: 12,
     fontWeight: "100",
   },
-  address: {
-    fontSize: 10,
-  },
-  map: {
-    paddingTop: 10,
-    width: "100%",
-    height: "50%",
+  title: {
+    fontSize: 18,
+    fontWeight: "bold",
   },
 });
