@@ -6,9 +6,18 @@ import { ActivityIndicator, Avatar, Card } from "react-native-paper";
 import backendUrl from "../utils/backend";
 import axios from "axios";
 import { Station } from "../utils/types";
+import { Searchbar } from "react-native-paper";
+
+//Local search function on list of stations loaded from backend
+const searchFunction = (keyword: string, list: Array<Station>) => {
+  function myFunction(value: Station) {
+    return value.name.toLowerCase().includes(keyword.toLowerCase());
+  }
+  return list.filter(myFunction);
+};
 
 const useGetStation = (url: string) => {
-  const [data, setData] = useState<any>(null);
+  const [data, setData] = useState<Array<Station>>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<any>(null);
 
@@ -16,7 +25,6 @@ const useGetStation = (url: string) => {
     const fetchData = async () => {
       try {
         const response = await axios.get(url);
-        ///const json = await response.json();
         setData(response.data);
       } catch (e) {
         setError(e);
@@ -24,18 +32,28 @@ const useGetStation = (url: string) => {
         setLoading(false);
       }
     };
-
     fetchData();
   }, [url]);
 
   return { data, loading, error };
 };
 
-
-
-const StationList = ({navigation}) => {
+const StationList = ({ navigation }) => {
+  const [searchQuery, setSearchQuery] = useState("");
+  const onChangeSearch = (query: string) => setSearchQuery(query);
   const Item = ({ data }: { data: Station }) => (
-    <Card style={styles.card} onPress={() => navigation.navigate('Details', {id:data.id, name: data.name, address:data.address, x:data.x, y:data.y})}>
+    <Card
+      style={styles.card}
+      onPress={() =>
+        navigation.navigate("Details", {
+          id: data.id,
+          name: data.name,
+          address: data.address,
+          x: data.x,
+          y: data.y,
+        })
+      }
+    >
       <Card.Title
         title={data.name}
         titleStyle={styles.title}
@@ -54,20 +72,31 @@ const StationList = ({navigation}) => {
   );
 
   const { data, loading, error } = useGetStation(backendUrl + "/stations");
+
   if (error) {
-    return <View style={styles.container}><Text>{error.toString()}</Text></View>;
+    return (
+      <View style={styles.container}>
+        <Text>{error.toString()}</Text>
+      </View>
+    );
   } else if (loading) {
-    return <View style={styles.container}><ActivityIndicator animating={true} color={"#EFA3C8"} size="large" /></View>;
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator animating={true} color={"#EFA3C8"} size="large" />
+      </View>
+    );
   }
   return (
     <View>
       <FlatList
-        data={data}
+        data={searchFunction(searchQuery,data)}
+        ListHeaderComponent={<Searchbar
+          placeholder="Search"
+          onChangeText={onChangeSearch}
+          value={searchQuery}
+        />}
         renderItem={({ item }) => <Item data={item} />}
         keyExtractor={(item: Station) => item.id.toString()}
-        /* getItemLayout={(data, index) => (
-            {length: 10, offset: 10* index, index}
-          )} */
       />
     </View>
   );
@@ -82,10 +111,10 @@ const styles = StyleSheet.create({
   avatar: { margin: 8 },
   card: { margin: 4, flex: 1, minWidth: 350 },
   container: {
-    flex:1,
+    flex: 1,
     backgroundColor: "#f8f8f8",
     alignItems: "center",
-    justifyContent:"center"
+    justifyContent: "center",
   },
   item: {
     backgroundColor: "#f9c2ff",
@@ -101,5 +130,4 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
-
 });
