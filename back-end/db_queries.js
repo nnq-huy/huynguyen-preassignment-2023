@@ -152,24 +152,24 @@ const createJourney = async (request, response) => {
   const {
     departure_time,
     return_time,
-    depparture_station_id,
-    depparture_station,
+    departure_station_id,
+    departure_station,
     return_station_id,
     return_station,
     distance,
-    duration,
+    duration
   } = request.body;
   const query = {
-    text: "INSERT INTO journeys ( departure_time, return_time, depparture_station_id, depparture_station, return_station_id, return_station, distance, duration,) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id",
+    text: "INSERT INTO journeys ( departure_time, return_time, departure_station_id, departure_station, return_station_id, return_station, distance, duration) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id",
     values: [
       departure_time,
       return_time,
-      depparture_station_id,
-      depparture_station,
+      departure_station_id,
+      departure_station,
       return_station_id,
       return_station,
       distance,
-      duration,
+      duration
     ],
   };
   try {
