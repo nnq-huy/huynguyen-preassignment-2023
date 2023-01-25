@@ -81,7 +81,7 @@ const StationList = ({ navigation }) => {
   } else if (loading) {
     return (
       <View style={styles.container}>
-        <ActivityIndicator animating={true} color={"#EFA3C8"} size="large" />
+        <ActivityIndicator animating={true} color={"#6750a4"} size="large" />
       </View>
     );
   }

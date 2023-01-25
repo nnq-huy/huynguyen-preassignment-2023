@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 import React from "react";
 import axios from "axios";
 import MapView, { Marker } from "react-native-maps";
-import { View, Text, StyleSheet, ScrollView } from "react-native";
-import { ActivityIndicator, Card, DataTable } from "react-native-paper";
+import { View, StyleSheet, ScrollView } from "react-native";
+import { ActivityIndicator, Card, DataTable,Text } from "react-native-paper";
 import backendUrl from "../utils/backend";
 import { Station, StationInfo } from "../utils/types";
 
@@ -57,7 +57,7 @@ const StationDetail = ({ route, navigation }) => {
   } else if (loading) {
     return (
       <View style={styles.container}>
-        <ActivityIndicator animating={true} color={"#EFA3C8"} size="large" />
+        <ActivityIndicator animating={true} color={"#6750a4"} size="large" />
       </View>
     );
   }
@@ -90,30 +90,30 @@ const StationDetail = ({ route, navigation }) => {
               </DataTable.Row>
               <DataTable.Row>
                 <DataTable.Cell style={styles.textCell}>
-                  Avg distance of journeys starting from this station(km)
+                  Avg distance of journeys from this station
                 </DataTable.Cell>
                 <DataTable.Cell style={styles.numberCell} numeric>
-                  {(data.avg_starting_dist/1000).toFixed(2)}
+                  {(data.avg_starting_dist/1000).toFixed(2)}km
                 </DataTable.Cell>
               </DataTable.Row>
               <DataTable.Row>
                 <DataTable.Cell style={styles.textCell}>
-                  Avg distance of journeys ending at this station(km)
+                  Avg distance of journeys to this station
                 </DataTable.Cell>
                 <DataTable.Cell style={styles.numberCell} numeric>
-                  {(data.avg_ending_dist/1000).toFixed(2)}
+                  {(data.avg_ending_dist/1000).toFixed(2)}km
                 </DataTable.Cell>
               </DataTable.Row>
-              <Text>
-                Most popular destination starting from this station:{" "}
+              <Text variant="titleMedium">
+                Most popular destinations from this station:{" "}
                 {data.most_popular_return[0].return_station},{" "}
                 {data.most_popular_return[1].return_station},{" "}
                 {data.most_popular_return[2].return_station},{" "}
                 {data.most_popular_return[3].return_station},{" "}
                 {data.most_popular_return[4].return_station}
               </Text>
-              <Text>
-                Most popular departure ending at this station:{" "}
+              <Text variant="titleMedium">
+                Most popular departures to this station:{" "}
                 {data.most_popular_departure[0].departure_station},{" "}
                 {data.most_popular_departure[1].departure_station},{" "}
                 {data.most_popular_departure[2].departure_station},{" "}
@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
     fontWeight: "100",
   },
   title: {
-    fontSize: 18,
+    fontSize: 24,
     fontWeight: "bold",
   },
   numberCell: {
