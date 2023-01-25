@@ -10,10 +10,10 @@ import { Searchbar } from "react-native-paper";
 
 //Local search function on list of stations loaded from backend
 const searchFunction = (keyword: string, list: Array<Station>) => {
-  function myFunction(value: Station) {
+  function listFilter(value: Station) {
     return value.name.toLowerCase().includes(keyword.toLowerCase());
   }
-  return list.filter(myFunction);
+  return list.filter(listFilter);
 };
 
 const useGetStation = (url: string) => {
@@ -40,7 +40,6 @@ const useGetStation = (url: string) => {
 
 const StationList = ({ navigation }) => {
   const [searchQuery, setSearchQuery] = useState("");
-  const onChangeSearch = (query: string) => setSearchQuery(query);
   const Item = ({ data }: { data: Station }) => (
     <Card
       style={styles.card}
@@ -92,7 +91,7 @@ const StationList = ({ navigation }) => {
         data={searchFunction(searchQuery,data)}
         ListHeaderComponent={<Searchbar
           placeholder="Search"
-          onChangeText={onChangeSearch}
+          onChangeText={(text: string) => setSearchQuery(text)}
           value={searchQuery}
         />}
         renderItem={({ item }) => <Item data={item} />}
