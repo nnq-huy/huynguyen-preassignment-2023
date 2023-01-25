@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 import React from "react";
 import axios from "axios";
 import MapView, { Marker } from "react-native-maps";
-import { View, Text, StyleSheet } from "react-native";
-import { ActivityIndicator, Card } from "react-native-paper";
+import { View, Text, StyleSheet, ScrollView } from "react-native";
+import { ActivityIndicator, Card, DataTable } from "react-native-paper";
 import backendUrl from "../utils/backend";
 import { Station, StationInfo } from "../utils/types";
 
@@ -49,7 +49,11 @@ const StationDetail = ({ route, navigation }) => {
     backendUrl + "/station/id=" + id
   );
   if (error) {
-    return <View style={styles.container}><Text>{error.toString()}</Text></View>;
+    return (
+      <View style={styles.container}>
+        <Text>{error.toString()}</Text>
+      </View>
+    );
   } else if (loading) {
     return (
       <View style={styles.container}>
@@ -58,39 +62,79 @@ const StationDetail = ({ route, navigation }) => {
     );
   }
   return (
-    <View>
-      <Card>
-        <Card.Title
-          title={name}
-          titleStyle={styles.title}
-          subtitle={address}
-        ></Card.Title>
-        <Card.Content>
-          <Text>
-            Journeys starting from this station: {data.departure_count}
-          </Text>
-          <Text>Journeys ending at this station: {data.return_count}</Text>
-          <Text>
-            Average distance of journeys starting from this station:{" "}
-            {data.avg_starting_dist}
-          </Text>
-          <Text>
-            Average distance of journeys ending at this station:{" "}
-            {data.avg_ending_dist}
-          </Text>
-        </Card.Content>
-        <MapView
-          style={styles.map}
-          initialRegion={{
-            latitude: y,
-            longitude: x,
-            latitudeDelta: 0.0092,
-            longitudeDelta: 0.0042,
-          }}
-        >
-          <Marker coordinate={{ latitude: y, longitude: x }} />
-        </MapView>
-      </Card>
+    <View style={styles.screen}>
+      <ScrollView>
+        <Card>
+          <Card.Title
+            title={name}
+            titleStyle={styles.title}
+            subtitle={address}
+          ></Card.Title>
+          <Card.Content>
+            <DataTable>
+              <DataTable.Row>
+                <DataTable.Cell style={styles.textCell}>
+                  Journeys starting from this station
+                </DataTable.Cell>
+                <DataTable.Cell style={styles.numberCell} numeric>
+                  {data.departure_count}
+                </DataTable.Cell>
+              </DataTable.Row>
+              <DataTable.Row>
+                <DataTable.Cell style={styles.textCell}>
+                  Journeys ending at this station
+                </DataTable.Cell>
+                <DataTable.Cell style={styles.numberCell} numeric>
+                  {data.return_count}
+                </DataTable.Cell>
+              </DataTable.Row>
+              <DataTable.Row>
+                <DataTable.Cell style={styles.textCell}>
+                  Avg distance of journeys starting from this station(km)
+                </DataTable.Cell>
+                <DataTable.Cell style={styles.numberCell} numeric>
+                  {(data.avg_starting_dist/1000).toFixed(2)}
+                </DataTable.Cell>
+              </DataTable.Row>
+              <DataTable.Row>
+                <DataTable.Cell style={styles.textCell}>
+                  Avg distance of journeys ending at this station(km)
+                </DataTable.Cell>
+                <DataTable.Cell style={styles.numberCell} numeric>
+                  {(data.avg_ending_dist/1000).toFixed(2)}
+                </DataTable.Cell>
+              </DataTable.Row>
+              <Text>
+                Most popular destination starting from this station:{" "}
+                {data.most_popular_return[0].return_station},{" "}
+                {data.most_popular_return[1].return_station},{" "}
+                {data.most_popular_return[2].return_station},{" "}
+                {data.most_popular_return[3].return_station},{" "}
+                {data.most_popular_return[4].return_station}
+              </Text>
+              <Text>
+                Most popular departure ending at this station:{" "}
+                {data.most_popular_departure[0].departure_station},{" "}
+                {data.most_popular_departure[1].departure_station},{" "}
+                {data.most_popular_departure[2].departure_station},{" "}
+                {data.most_popular_departure[3].departure_station},{" "}
+                {data.most_popular_departure[4].departure_station}
+              </Text>
+            </DataTable>
+          </Card.Content>
+        </Card>
+      </ScrollView>
+      <MapView
+        style={styles.map}
+        initialRegion={{
+          latitude: y,
+          longitude: x,
+          latitudeDelta: 0.0092,
+          longitudeDelta: 0.0042,
+        }}
+      >
+        <Marker coordinate={{ latitude: y, longitude: x }} />
+      </MapView>
     </View>
   );
 };
@@ -101,16 +145,16 @@ const styles = StyleSheet.create({
     fontSize: 10,
   },
   container: {
-    flex:1,
-    backgroundColor: "#f8f8f8",
+    flex: 1,
     alignItems: "center",
-    justifyContent:"center"
+    justifyContent: "center",
+  },
+  dataTable: {
+    margin: 5,
   },
   map: {
-    marginTop:20,
-    paddingTop: 20,
     width: "100%",
-    height: "65%",
+    height: "50%",
   },
   subtitle: {
     fontSize: 12,
@@ -119,5 +163,14 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: "bold",
+  },
+  numberCell: {
+    flex: 1,
+  },
+  textCell: {
+    flex: 5,
+  },
+  screen: {
+    height: "100%",
   },
 });
