@@ -61,7 +61,7 @@ const StationList = ({ navigation }) => {
         right={(props: any) => (
           <Avatar.Text
             {...props}
-            size={32}
+            size={48}
             style={styles.avatar}
             label={data.id.toString()}
           />
@@ -88,12 +88,14 @@ const StationList = ({ navigation }) => {
   return (
     <View>
       <FlatList
-        data={searchFunction(searchQuery,data)}
-        ListHeaderComponent={<Searchbar
-          placeholder="Search"
-          onChangeText={(text: string) => setSearchQuery(text)}
-          value={searchQuery}
-        />}
+        data={searchFunction(searchQuery, data)}
+        ListHeaderComponent={
+          <Searchbar
+            placeholder="Search"
+            onChangeText={(text: string) => setSearchQuery(text)}
+            value={searchQuery}
+          />
+        }
         renderItem={({ item }) => <Item data={item} />}
         keyExtractor={(item: Station) => item.id.toString()}
       />
