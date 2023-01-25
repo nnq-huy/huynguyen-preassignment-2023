@@ -127,6 +127,14 @@ const getStationInfo = async (request, response) => {
     text: "SELECT SUM(CASE WHEN departure_station_id = $1 THEN 1 ELSE 0 END) as departure_count, SUM(CASE WHEN return_station_id = $1 THEN 1 ELSE 0 END) as return_count FROM journeys",
     values: [station_id],
   };
+  const query_five_most_popular_ending_stations = {
+    text:"SELECT return_station, COUNT(*) as count FROM journeys WHERE departure_station_id = $1 GROUP BY return_station ORDER BY count DESC LIMIT 5;",
+    values:[station_id]
+  }
+  const query_five_most_popular_starting_stations = {
+    text:"SELECT departure_station, COUNT(*) as count FROM journeys WHERE return_station_id = $1 GROUP BY departure_station ORDER BY count DESC LIMIT 5;",
+    values:[station_id]
+  }
   const queries = [
     query_basic_info,
     query_count_journeys,
@@ -139,6 +147,9 @@ const getStationInfo = async (request, response) => {
       const result = await client.query(queries[i]);
       station = { ...station, ...result.rows[0] };
     }
+    const result_ending = await client.query(query_five_most_popular_ending_stations);
+    const result_starting = await client.query(query_five_most_popular_starting_stations);
+    station = { ...station,most_popular_departure:result_starting.rows, most_popular_return:result_ending.rows};
   } catch (err) {
     console.log(err.stack);
   } finally {
