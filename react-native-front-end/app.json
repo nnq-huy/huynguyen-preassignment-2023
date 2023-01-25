@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "city-bike",
-    "slug": "city-bike",
+    "slug": "solita-city-bike-assignment",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -28,6 +28,12 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "c75d6a1c-1937-4d5f-b9c0-866ab164bbaa"
+      }
+    },
+    "owner": "quanghuyz"
   }
 }
