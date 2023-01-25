@@ -11,6 +11,7 @@ import {
   Portal,
   Text,
   TextInput,
+  Card,
 } from "react-native-paper";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import serverUrl from "../utils/backend";
@@ -156,67 +157,73 @@ const HomeScreen = () => {
   return (
     <Provider>
       <View>
-        <Appbar mode="center-aligned" safeAreaInsets={{ top }}>
+        <Appbar mode="small" safeAreaInsets={{ top }}>
           <Appbar.Content title="Home" />
         </Appbar>
         <View style={styles.container}>
           <List.Section>
             <List.Subheader>Add data from csv</List.Subheader>
-            <List.Item
-              title={uploadStationsTitle}
-              left={() => <List.Icon icon="file-delimited" />}
-              onPress={() => {
-                handleUploadCsv("stations");
-              }}
-              right={() => (
-                <Button
-                  color="#8EA7E9"
-                  disabled={pushStationsStatus}
-                  onPress={() => {
-                    pushCsvToDb("stations");
-                  }}
-                >
-                  Push to DB
-                </Button>
-              )}
-            />
-            <Divider bold={true} />
-            <List.Item
-              title={uploadJourneysTitle}
-              left={() => <List.Icon icon="file-delimited" />}
-              onPress={() => {
-                handleUploadCsv("journeys");
-              }}
-              right={() => (
-                <Button
-                  color="#8EA7E9"
-                  disabled={pushJourneysStatus}
-                  onPress={() => {
-                    pushCsvToDb("journeys");
-                  }}
-                >
-                  Push to DB
-                </Button>
-              )}
-            />
+            <Card style={styles.card}>
+              <List.Item
+                title={uploadStationsTitle}
+                left={() => <List.Icon icon="file-delimited" />}
+                onPress={() => {
+                  handleUploadCsv("stations");
+                }}
+                right={() => (
+                  <Button
+                    color="#8EA7E9"
+                    disabled={pushStationsStatus}
+                    onPress={() => {
+                      pushCsvToDb("stations");
+                    }}
+                  >
+                    Push to DB
+                  </Button>
+                )}
+              />
+            </Card>
+            <Card  style={styles.card}>
+              <List.Item
+                title={uploadJourneysTitle}
+                left={() => <List.Icon icon="file-delimited" />}
+                onPress={() => {
+                  handleUploadCsv("journeys");
+                }}
+                right={() => (
+                  <Button
+                    color="#8EA7E9"
+                    disabled={pushJourneysStatus}
+                    onPress={() => {
+                      pushCsvToDb("journeys");
+                    }}
+                  >
+                    Push to DB
+                  </Button>
+                )}
+              />
+            </Card>
           </List.Section>
           <List.Section>
             <List.Subheader>Add data manually</List.Subheader>
-            <List.Item
-              title={"Enter a new station"}
-              left={() => <List.Icon icon="map-marker" />}
-              onPress={() => {
-                setStationVisible(true);
-              }}
-            />
-            <Divider bold={true} />
-            <List.Item
-              title="Enter a new journey "
-              left={() => <List.Icon icon="bike" />}
-              onPress={() => {
-                setJourneyVisible(true);
-              }}
-            />
+            <Card  style={styles.card}>
+              <List.Item
+                title={"Enter a new station"}
+                left={() => <List.Icon icon="map-marker" />}
+                onPress={() => {
+                  setStationVisible(true);
+                }}
+              />
+            </Card>
+            <Card style={styles.card}>
+              <List.Item
+                title="Enter a new journey "
+                left={() => <List.Icon icon="bike" />}
+                onPress={() => {
+                  setJourneyVisible(true);
+                }}
+              />
+            </Card>
           </List.Section>
           <Portal>
             <Dialog
@@ -361,6 +368,11 @@ const styles = StyleSheet.create({
   container: {
     alignContent: "center",
     margin: 10,
+  },
+  card: {
+    backgroundColor:"#E5E0FF",
+    marginBottom:8,
+    paddingLeft:5,
   },
   maskedInput: {
     height: 25,
