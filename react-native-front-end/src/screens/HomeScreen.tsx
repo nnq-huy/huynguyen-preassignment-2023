@@ -261,16 +261,13 @@ const HomeScreen = () => {
               </Dialog.Content>
               <Dialog.Actions>
                 <Button
-                  color="#8EA7E9"
                   onPress={() => {
                     setStationVisible(false);
                   }}
                 >
                   Cancel
                 </Button>
-                <Button color="#8EA7E9" onPress={putNewStation}>
-                  Ok
-                </Button>
+                <Button onPress={putNewStation}>Ok</Button>
               </Dialog.Actions>
             </Dialog>
             <Dialog
@@ -343,16 +340,13 @@ const HomeScreen = () => {
               </Dialog.Content>
               <Dialog.Actions>
                 <Button
-                  color="#8EA7E9"
                   onPress={() => {
                     setJourneyVisible(false);
                   }}
                 >
                   Cancel
                 </Button>
-                <Button color="#8EA7E9" onPress={putNewJourney}>
-                  Ok
-                </Button>
+                <Button onPress={putNewJourney}>Ok</Button>
               </Dialog.Actions>
             </Dialog>
           </Portal>
@@ -366,7 +360,6 @@ export default HomeScreen;
 const styles = StyleSheet.create({
   container: {
     alignContent: "center",
-    backgroundColor: "#E5E0FF",
     margin: 10,
   },
   maskedInput: {
