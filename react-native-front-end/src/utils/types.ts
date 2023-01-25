@@ -10,8 +10,8 @@ export interface StationInfo extends Station {
   return_count: number;
   avg_starting_dist: number;
   avg_ending_dist: number;
-  most_popular_return: Array<String>;
-  most_popular_departure: Array<String>;
+  most_popular_return: Array<{return_station:string,count:number}>;
+  most_popular_departure: Array<{departure_station:string,count:number}>;
 }
 export type Journey = {
   departure_time: string;
