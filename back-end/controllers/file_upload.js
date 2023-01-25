@@ -27,16 +27,16 @@ const storage = multer.diskStorage({
 
 const uploadFile = multer({ storage: storage });
 
-const uploadCsv = (request, response, next) => {
+const uploadCsv = (request, response) => {
   const file = request.file;
   if (!file) {
-    const error = new Error("Upload not complete!");
-    error.httpStatusCode = 400;
-    return next(error);
+    response.status(400).json({
+      success: false,
+      message:"Upload not complete!"
+    });
   }
-  response.json({
+  response.status(201).json({
     success: true,
-    statusCode: 200,
     fileName: file.filename,
   });
 };

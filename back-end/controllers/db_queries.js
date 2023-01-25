@@ -202,9 +202,9 @@ const createStation = async (request, response) => {
   };
   try {
     const results = await client.query(query);
-    response.status(201).send("Station added with ID:" + results.rows[0].id);
+    response.status(201).send("Station added with ID: " + results.rows[0].id);
   } catch (err) {
-    response.status(405).send("Cannot add a new entry" + err);
+    response.status(405).send("Cannot add a new entry! " + err);
   } finally {
     client.release();
   }
