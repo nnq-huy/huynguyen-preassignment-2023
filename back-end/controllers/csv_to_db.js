@@ -29,7 +29,7 @@ const tripHeaders = [
 ];
 
 //function for bulk db import, takes csvResult as array of data from parsed csv file, and a PostgresSQL query as arguments
-function dbImport(csvResult, query) {
+async function dbImport(csvResult, query) {
   //initialize db connection
   const db = pgp(cn);
   //import loop
@@ -41,7 +41,7 @@ function dbImport(csvResult, query) {
     }
   }
   //mass transactions
-  db.tx(function () {
+  await db.tx(function () {
     return this.sequence(factory);
   })
     .then(function (data) {
@@ -52,7 +52,7 @@ function dbImport(csvResult, query) {
     })
     .catch(function (error) {
       // error;
-      console.log(error);
+      throw error
     });
 }
 
@@ -107,7 +107,7 @@ const parseJourneys = () => {
     )
     .on("end", (rowCount) => console.log("Parsed " + rowCount + " rows"));
 
-  tripStream.pipe(csvStream);
+    (tripStream)?tripStream.pipe(csvStream):()=>{}; //check if stream is not null and parse csv data
   return csvData;
 };
 
@@ -144,26 +144,26 @@ const parseStations = () => {
     })
     .on("end", (rowCount) => console.log("Parsed " + rowCount + " rows"));
 
-  stationStream.pipe(csvStream);
+  (stationStream)?stationStream.pipe(csvStream):()=>{};//check if stream is not null and parse csv data
   return csvData;
 };
 
-const pushCsvToDb = (request, response) => {
+const pushCsvToDb = async (request, response) => {
   const importType = request.params.importType;
   if (importType == "journeys") {
     try {
-      dbImport(parseJourneys(), journeyImportQuery);
+      await dbImport(parseJourneys(), journeyImportQuery);
+      response.status(200).send("Import complete.");
     } catch (e) {
       response.status(400).send(e);
     }
-    response.status(200).send("Import complete.");
   } else if (importType == "stations") {
     try {
-      dbImport(parseStations(), stationImportQuery);
+      await dbImport(parseStations(), stationImportQuery);
+      response.status(200).send("Import complete.");
     } catch (e) {
       response.status(400).send(e);
     }
-    response.status(200).send("Import complete.");
   } else {
     response.status(400).send("Invalid request!");
   }
