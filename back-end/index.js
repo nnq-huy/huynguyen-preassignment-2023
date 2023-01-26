@@ -20,3 +20,5 @@ app.use(routes);
 app.listen(PORT, () => {
   console.log(`App running on port ${PORT}. Go to http://localhost:3000/`);
 });
+
+module.exports = app;
