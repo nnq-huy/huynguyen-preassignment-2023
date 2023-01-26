@@ -100,8 +100,8 @@ const getStationInfo = async (request, response) => {
   const client = await pool.connect();
   let station = {
     id: 0,
-    name: "a",
-    address: "a",
+    name: "",
+    address: "",
     x: 0.0,
     y: 0.0,
     departure_count: 0,
@@ -128,13 +128,13 @@ const getStationInfo = async (request, response) => {
     values: [station_id],
   };
   const query_five_most_popular_ending_stations = {
-    text:"SELECT return_station, COUNT(*) as count FROM journeys WHERE departure_station_id = $1 GROUP BY return_station ORDER BY count DESC LIMIT 5;",
-    values:[station_id]
-  }
+    text: "SELECT return_station, COUNT(*) as count FROM journeys WHERE departure_station_id = $1 GROUP BY return_station ORDER BY count DESC LIMIT 5;",
+    values: [station_id],
+  };
   const query_five_most_popular_starting_stations = {
-    text:"SELECT departure_station, COUNT(*) as count FROM journeys WHERE return_station_id = $1 GROUP BY departure_station ORDER BY count DESC LIMIT 5;",
-    values:[station_id]
-  }
+    text: "SELECT departure_station, COUNT(*) as count FROM journeys WHERE return_station_id = $1 GROUP BY departure_station ORDER BY count DESC LIMIT 5;",
+    values: [station_id],
+  };
   const queries = [
     query_basic_info,
     query_count_journeys,
@@ -144,18 +144,31 @@ const getStationInfo = async (request, response) => {
 
   try {
     for (let i = 0; i < queries.length; i++) {
-      const result = await client.query(queries[i]);
-      station = { ...station, ...result.rows[0] };
+      try {
+        const result = await client.query(queries[i]);
+        station = { ...station, ...result.rows[0] };
+      } catch (err) {
+        throw err
+      }
     }
-    const result_ending = await client.query(query_five_most_popular_ending_stations);
-    const result_starting = await client.query(query_five_most_popular_starting_stations);
-    station = { ...station,most_popular_departure:result_starting.rows, most_popular_return:result_ending.rows};
+    const result_ending = await client.query(
+      query_five_most_popular_ending_stations
+    );
+    const result_starting = await client.query(
+      query_five_most_popular_starting_stations
+    );
+    station = {
+      ...station,
+      most_popular_departure: result_starting.rows,
+      most_popular_return: result_ending.rows,
+    };
+    station.id ==! 0 ?response.status(200).json(station): response.status(404).send("Station not found!");
+    ;
   } catch (err) {
-    console.log(err.stack);
+    response.status(400).send("Error " + err);
   } finally {
     client.release();
   }
-  response.status(200).json(station);
 };
 //create new journey based on json object from request body
 const createJourney = async (request, response) => {
@@ -168,7 +181,7 @@ const createJourney = async (request, response) => {
     return_station_id,
     return_station,
     distance,
-    duration
+    duration,
   } = request.body;
   const query = {
     text: "INSERT INTO journeys ( departure_time, return_time, departure_station_id, departure_station, return_station_id, return_station, distance, duration) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id",
@@ -180,7 +193,7 @@ const createJourney = async (request, response) => {
       return_station_id,
       return_station,
       distance,
-      duration
+      duration,
     ],
   };
   try {
