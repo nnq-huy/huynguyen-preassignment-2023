@@ -1,21 +1,16 @@
+//api integration tests:
 require("dotenv").config({ path: `.env.${process.env.NODE_ENV}` });
 const request = require("supertest");
-const express = require("express");
-const routes = require("../routes");
+const app = require("../index");
 
-const app = express();
-app.use(express.json());
-app.use(routes);
-
-
-describe("Initialize tables", () => {
+describe("Post to initialize tables /db ", () => {
   it("should return success creating new tables:stations, journeys or they exist", async () => {
     const res = await request(app).post("/db");
     expect(res.statusCode).toEqual(201);
   });
 });
 
-describe("Post to start csv parser", () => {
+describe("Post to start csv parser /csv/:importType", () => {
   it("should return error if csv types is not 'stations' or ' journeys'", async () => {
     const res = await request(app).post("/csv/station");
     expect(res.statusCode).toEqual(400);
@@ -30,8 +25,8 @@ describe("Post to start csv parser", () => {
   });
 });
 
-describe("File upload endpoint", () => {
-  it("upload a file to back end and rename it to request param", async () => {
+describe("POST /upload/:uploadType to upload file", () => {
+  it("upload a file to back end and rename it to :uploadType", async () => {
     const res = await request(app)
       .post("/upload/any")
       .attach("file", "./tests/testfile.csv");
@@ -44,16 +39,16 @@ describe("File upload endpoint", () => {
   });
 });
 
-describe("Post to create a new station", () => {
+describe("POST /journeys/new & /stations/new to create a new station/journey ", () => {
   it("create new journey based on a valid json object from request body", async () => {
-    const randomId = 1000 + Math.round(Math.random() * 1000);
+    const randomId = 10000 + Math.round(Math.random() * 10000);
     const data = {
-      "id": randomId,
-      "name": "Test station",
-      "address": "test address",
-      "x": 1,
-      "y": 1
-    }
+      id: randomId,
+      name: "Test station",
+      address: "test address",
+      x: 1,
+      y: 1,
+    };
     const res = await request(app).post("/stations/new").send(data);
 
     expect(res.statusCode).toEqual(201);
@@ -75,5 +70,41 @@ describe("Post to create a new station", () => {
     const res = await request(app).post("/stations/new").send("");
     expect(res.statusCode).toEqual(405);
   });
-
 });
+
+describe("GET /stations", () => {
+  it("should return an array of stations", async () => {
+    const res = await request(app).get("/stations");
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toBeTruthy();
+  });
+  it("should return station details of a existing station with valid id", async () => {
+    const res = await request(app).get("/station/id=1");
+    expect(res.statusCode).toEqual(200);
+    expect(res.body.name).toEqual("Kaivopuisto");
+    expect(res.body.departure_count).toBeTruthy();
+    expect(res.body.return_count).toBeTruthy();
+    expect(res.body.avg_starting_dist).toBeTruthy();
+    expect(res.body.avg_ending_dist).toBeTruthy();
+    expect(res.body.most_popular_return).toBeTruthy();
+    expect(res.body.most_popular_departure).toBeTruthy();
+  });
+  it("should return an error if station is not found", async () => {
+    const res = await request(app).get("/station/id=99999");
+    expect(res.statusCode).toEqual(404);
+
+  });
+  it("should throw error if id is not a valid integer", async () => {
+    const res = await request(app).get("/station/id=a");
+    expect(res.statusCode).toEqual(400);
+  });
+});
+
+describe("GET /journeys", () => {
+  it("should return an array of journeys", async () => {
+    const res = await request(app).get("/journeys");
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toBeTruthy();
+  });
+});
+
