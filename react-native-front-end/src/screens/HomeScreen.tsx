@@ -17,7 +17,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import serverUrl from "../utils/backend";
 import axios from "axios";
 import * as DocumentPicker from "expo-document-picker";
-import { Station, Journey } from "../utils/types";
+import { Journey } from "../utils/types";
 import { MaskedTextInput } from "react-native-mask-text";
 
 const HomeScreen = () => {
@@ -74,7 +74,7 @@ const HomeScreen = () => {
               "Content-Type": "multipart/form-data",
             },
           });
-          if (responseOfFileUpload.status === 200) {
+          if (responseOfFileUpload.status === 201) {
             let fileName = responseOfFileUpload.data.fileName;
             if (csvType === "stations") {
               setUploadStationsTitle(fileName + " uploaded");
@@ -107,16 +107,9 @@ const HomeScreen = () => {
     }
   };
   const putNewStation = async () => {
-    let uploadStation: Station = {
-      id: parseInt(newStation.id),
-      name: newStation.name,
-      address: newStation.address,
-      x: parseFloat(newStation.x),
-      y: parseFloat(newStation.y),
-    };
     const url = serverUrl + "/stations/new";
     try {
-      const responseOfDbQuery = await axios.post(url, uploadStation);
+      const responseOfDbQuery = await axios.post(url, newStation);
       if (responseOfDbQuery.status === 201) {
         setStationVisible(false);
         Alert.alert(url, responseOfDbQuery.data);
