@@ -10,10 +10,8 @@ const storage = multer.diskStorage({
     //check if file path exists or create the directory
     fs.access(dir, function (error) {
       if (error) {
-        console.log("Directory does not exist.");
         fs.mkdir(dir, (error) => cb(error, dir));
       } else {
-        console.log("Directory exists.");
         cb(null, dir);
       }
     });
