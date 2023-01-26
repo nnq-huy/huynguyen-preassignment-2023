@@ -108,7 +108,7 @@ const parseJourneys = () => {
     )
     .on("end", (rowCount) => console.log("Parsed " + rowCount + " rows"));
 
-  tripStream ? tripStream.pipe(csvStream) : () => {}; //check if stream is not null and parse csv data
+  tripStream ? tripStream.pipe(csvStream) : () => {}; //check if file stream is not null and parse csv data
   return csvData;
 };
 
@@ -145,7 +145,7 @@ const parseStations = () => {
     })
     .on("end", (rowCount) => console.log("Parsed " + rowCount + " rows"));
 
-  stationStream ? stationStream.pipe(csvStream) : () => {}; //check if stream is not null and parse csv data
+  stationStream.pipe(csvStream); //check if file stream is not null and parse csv data
   return csvData;
 };
 

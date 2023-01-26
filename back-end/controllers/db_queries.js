@@ -148,7 +148,7 @@ const getStationInfo = async (request, response) => {
         const result = await client.query(queries[i]);
         station = { ...station, ...result.rows[0] };
       } catch (err) {
-        throw err
+        throw err;
       }
     }
     const result_ending = await client.query(
@@ -162,14 +162,46 @@ const getStationInfo = async (request, response) => {
       most_popular_departure: result_starting.rows,
       most_popular_return: result_ending.rows,
     };
-    station.id ==! 0 ?response.status(200).json(station): response.status(404).send("Station not found!");
-    ;
+    station.id == !0
+      ? response.status(200).json(station)
+      : response.status(404).send("Station not found!");
   } catch (err) {
     response.status(400).send("Error " + err);
   } finally {
     client.release();
   }
 };
+    /* Journey data validation:
+    1. Departure time is parsable
+    2. Return time is parsable & greater than departure time
+    3. Station id is a positive integer
+    4. Distance and duration is greater than 10(m or s)
+    */
+function journeyValidation(
+  departure_time,
+  return_time,
+  departure_station_id,
+  departure_station,
+  return_station_id,
+  return_station,
+  distance,
+  duration
+) {
+  const isDepartureValid = Date.parse(departure_time) !== null;
+  const isReturnValid =
+    Date.parse(return_time) !== null &&
+    Date.parse(return_time) > Date.parse(departure_time);
+  const isIdValid = departure_station_id > 0 && return_station_id > 0;
+  const isDurationDistanceValid = distance > 10 && duration > 10;
+  const isStationsValid = departure_station != "" && return_station != "";
+  return (
+    isDepartureValid &&
+    isIdValid &&
+    isReturnValid &&
+    isDurationDistanceValid &&
+    isStationsValid
+  );
+}
 //create new journey based on json object from request body
 const createJourney = async (request, response) => {
   const client = await pool.connect();
@@ -183,6 +215,16 @@ const createJourney = async (request, response) => {
     distance,
     duration,
   } = request.body;
+  const isJourneyValid = journeyValidation(
+    departure_time,
+    return_time,
+    departure_station_id,
+    departure_station,
+    return_station_id,
+    return_station,
+    distance,
+    duration
+  );
   const query = {
     text: "INSERT INTO journeys ( departure_time, return_time, departure_station_id, departure_station, return_station_id, return_station, distance, duration) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id",
     values: [
@@ -196,15 +238,24 @@ const createJourney = async (request, response) => {
       duration,
     ],
   };
-  try {
-    const results = await client.query(query);
-    response.status(201).send("Journey added with ID:" + results.rows[0].id);
-  } catch (err) {
-    response.status(405).send("Cannot add a new entry" + err);
-  } finally {
-    client.release();
+  if (isJourneyValid) {
+    try {
+      const results = await client.query(query);
+      response.status(201).send("Journey added with ID:" + results.rows[0].id);
+    } catch (err) {
+      response.status(405).send("Cannot add a new entry" + err);
+    } finally {
+      client.release();
+    }
+  } else {
+    response.status(405).send("Cannot add a new entry: invalid data");
   }
 };
+//station validation: id is greater than zero and latitude/longitude is within finland's limit
+function stationValidation(id, name, address, x, y) {
+  const isLatLongValid = !(21.37 > x || x > 30.94 ||59.83 > y || y > 68.91);
+  return id > 0 && name != "" && address != "" && isLatLongValid;
+}
 //create new station based on json object from request body
 const createStation = async (request, response) => {
   const client = await pool.connect();
@@ -213,13 +264,18 @@ const createStation = async (request, response) => {
     text: "INSERT INTO stations ( id, name, address, x, y) VALUES ($1, $2, $3, $4, $5) RETURNING id",
     values: [id, name, address, x, y],
   };
-  try {
-    const results = await client.query(query);
-    response.status(201).send("Station added with ID: " + results.rows[0].id);
-  } catch (err) {
-    response.status(405).send("Cannot add a new entry! " + err);
-  } finally {
-    client.release();
+  const isStationValid = stationValidation(id, name, address, x, y);
+  if (isStationValid) {
+    try {
+      const results = await client.query(query);
+      response.status(201).send("Station added with ID: " + results.rows[0].id);
+    } catch (err) {
+      response.status(405).send("Cannot add a new entry! " + err);
+    } finally {
+      client.release();
+    }
+  } else {
+    response.status(405).send("Cannot add a new entry: station data invalid");
   }
 };
 module.exports = {
