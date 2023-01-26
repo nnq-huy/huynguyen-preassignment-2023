@@ -4,8 +4,8 @@
   "description": "node back-end for city-bike app using Express and Postgres",
   "main": "index.js",
   "scripts": {
-    "start-dev": "nodemon index.js",
-    "test": "cross-env NODE_ENV=test jest --runInBand --force-exit --testTimeout=10000"
+    "start-dev": "cross-env NODE_ENV=dev nodemon index.js ",
+    "test": "cross-env NODE_ENV=test jest --runInBand --force-exit --testTimeout=15000"
   },
   "keywords": [
     "city",
