@@ -41,9 +41,10 @@ async function dbImport(csvResult, query) {
     }
   }
   //mass transactions
-  await db.tx(function () {
-    return this.sequence(factory);
-  })
+  await db
+    .tx(function () {
+      return this.sequence(factory);
+    })
     .then(function (data) {
       // success;
       console.log("import complete ");
@@ -52,7 +53,7 @@ async function dbImport(csvResult, query) {
     })
     .catch(function (error) {
       // error;
-      throw error
+      throw error;
     });
 }
 
@@ -68,14 +69,14 @@ const parseJourneys = () => {
       delimiter: ",",
       quote: '"',
     })
-    /* Journey data vadilation:
+    /* Journey data validation:
     1. Departure time is parsable
     2. Return time is parsable & greater than departure time
     3. Station id is a positive integer
     4. Distance and duration is greater than 10(m or s)
     */
     .validate((row, cb) => {
-      const isDepartureValid = Date.parse(row.departure) !== null;
+      const isDepartureValid = Date.parse(row.departure_time) !== null;
       const isReturnValid =
         Date.parse(row.return_time) !== null &&
         Date.parse(row.return_time) > Date.parse(row.departure_time);
@@ -89,7 +90,7 @@ const parseJourneys = () => {
         return cb(null, false, "Invalid Id!");
       }
       if (!isDurationDistanceValid) {
-        return cb(null, false, "Invalid duration/distance");
+        return cb(null, false, "Invalid duration/distance!");
       }
       return cb(null, true);
     })
@@ -107,7 +108,7 @@ const parseJourneys = () => {
     )
     .on("end", (rowCount) => console.log("Parsed " + rowCount + " rows"));
 
-    (tripStream)?tripStream.pipe(csvStream):()=>{}; //check if stream is not null and parse csv data
+  tripStream ? tripStream.pipe(csvStream) : () => {}; //check if stream is not null and parse csv data
   return csvData;
 };
 
@@ -144,7 +145,7 @@ const parseStations = () => {
     })
     .on("end", (rowCount) => console.log("Parsed " + rowCount + " rows"));
 
-  (stationStream)?stationStream.pipe(csvStream):()=>{};//check if stream is not null and parse csv data
+  stationStream ? stationStream.pipe(csvStream) : () => {}; //check if stream is not null and parse csv data
   return csvData;
 };
 
