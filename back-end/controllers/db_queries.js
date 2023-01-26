@@ -162,7 +162,7 @@ const getStationInfo = async (request, response) => {
       most_popular_departure: result_starting.rows,
       most_popular_return: result_ending.rows,
     };
-    station.id == !0
+    station.id >0
       ? response.status(200).json(station)
       : response.status(404).send("Station not found!");
   } catch (err) {
