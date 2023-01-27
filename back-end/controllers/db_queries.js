@@ -162,7 +162,7 @@ const getStationInfo = async (request, response) => {
       most_popular_departure: result_starting.rows,
       most_popular_return: result_ending.rows,
     };
-    station.id >0
+    station.id > 0
       ? response.status(200).json(station)
       : response.status(404).send("Station not found!");
   } catch (err) {
@@ -171,13 +171,13 @@ const getStationInfo = async (request, response) => {
     client.release();
   }
 };
-    /* Journey data validation:
+/* Journey data validation:
     1. Departure time is parsable
     2. Return time is parsable & greater than departure time
     3. Station id is a positive integer
     4. Distance and duration is greater than 10(m or s)
     */
-function journeyValidation(
+const journeyValidation = (
   departure_time,
   return_time,
   departure_station_id,
@@ -186,13 +186,13 @@ function journeyValidation(
   return_station,
   distance,
   duration
-) {
+) => {
   const isDepartureValid = Date.parse(departure_time) !== null;
   const isReturnValid =
     Date.parse(return_time) !== null &&
     Date.parse(return_time) > Date.parse(departure_time);
   const isIdValid = departure_station_id > 0 && return_station_id > 0;
-  const isDurationDistanceValid = distance > 10 && duration > 10;
+  const isDurationDistanceValid = distance >= 10 && duration >= 10;
   const isStationsValid = departure_station != "" && return_station != "";
   return (
     isDepartureValid &&
@@ -201,7 +201,7 @@ function journeyValidation(
     isDurationDistanceValid &&
     isStationsValid
   );
-}
+};
 //create new journey based on json object from request body
 const createJourney = async (request, response) => {
   const client = await pool.connect();
@@ -252,9 +252,9 @@ const createJourney = async (request, response) => {
   }
 };
 //station validation: id is greater than zero and latitude/longitude is within finland's limit
-function stationValidation(id, name, address, x, y) {
-  const isLatLongValid = !(21.37 > x || x > 30.94 ||59.83 > y || y > 68.91);
-  return id > 0 && name != "" && address != "" && isLatLongValid;
+const stationValidation=(id, name, address, x, y) =>{
+  const isLatLongValid = !(21.37 > x || x > 30.94 || 59.83 > y || y > 68.91);
+  return Number.isInteger(id)&&id > 0 && name != "" && address != "" && isLatLongValid;
 }
 //create new station based on json object from request body
 const createStation = async (request, response) => {
@@ -287,4 +287,6 @@ module.exports = {
   getStationInfo,
   getJourneysByDepartureStation,
   getJourneysByReturnStation,
+  journeyValidation,
+  stationValidation,
 };
