@@ -36,7 +36,7 @@ async function dbImport(csvResult, query) {
   function factory(index) {
     qLength = csvResult.length;
     if (index < qLength) {
-      console.log("record " + (index + 1) + " of " + qLength + " imported.");
+      //console.log("record " + (index + 1) + " of " + qLength + " imported.");
       return this.query(query, csvResult[index]);
     }
   }
@@ -47,7 +47,7 @@ async function dbImport(csvResult, query) {
     })
     .then(function (data) {
       // success;
-      console.log("import complete ");
+      //console.log("import complete ");
       //end db connection
       pgp.end();
     })
@@ -82,7 +82,7 @@ const parseJourneys = () => {
         Date.parse(row.return_time) > Date.parse(row.departure_time);
       const isIdValid =
         row.departure_station_id > 0 && row.return_station_id > 0;
-      const isDurationDistanceValid = row.distance > 10 && row.duration > 10;
+      const isDurationDistanceValid = row.distance >= 10 && row.duration >= 10;
       if (!(isDepartureValid && isReturnValid)) {
         return cb(null, false, "Invalid departure/return time!");
       }
@@ -106,7 +106,7 @@ const parseJourneys = () => {
         )}] [reason=${reason}]`
       )
     )
-    .on("end", (rowCount) => console.log("Parsed " + rowCount + " rows"));
+    //.on("end", (rowCount) => console.log("Parsed " + rowCount + " rows"));
 
   tripStream ? tripStream.pipe(csvStream) : () => {}; //check if file stream is not null and parse csv data
   return csvData;
@@ -138,14 +138,14 @@ const parseStations = () => {
       quote: '"',
     })
     .on("error", (error) => console.log(error))
-    .validate((row) => 21.37 < row.x < 30.94 && 59.83 < row.y < 68.91) //validate finland's lat, long limit
+    .validate((row) => (Number.isInteger(row.id)&&row.id > 0 && row.name != "" && row.address != "" &&!(21.37 > row.x || row.x > 30.94 || 59.83 > row.y || row.y > 68.91))) //validate finland's lat, long limit
     .on("data", function (data) {
       //convert object to array for db transaction
       csvData.push(Object.values(data));
     })
-    .on("end", (rowCount) => console.log("Parsed " + rowCount + " rows"));
+    //.on("end", (rowCount) => console.log("Parsed " + rowCount + " rows"));
 
-  stationStream.pipe(csvStream); //check if file stream is not null and parse csv data
+    stationStream ? stationStream.pipe(csvStream) : () => {}; //check if file stream is not null and parse csv data
   return csvData;
 };
 
