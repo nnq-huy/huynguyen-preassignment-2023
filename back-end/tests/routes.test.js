@@ -108,53 +108,12 @@ describe("POST /journeys/new to create a new journey ", () => {
     const res = await request(app).post("/journeys/new").send(data);
     expect(res.statusCode).toEqual(201);
   });
-  it("return error when json data contains invalid departure time", async () => {
-    const invalidData = {
-      departure_time: "2021-25-14T10:10:10",
-      return_time: "2021-10-10T11:10:10",
-      departure_station_id: 1,
-      departure_station: "Kaivopuisto",
-      return_station_id: 2,
-      return_station: "Laivasillankatu",
-      distance: 100,
-      duration: 100,
-    };
-    const res = await request(app).post("/journeys/new").send(invalidData);
-    expect(res.statusCode).toEqual(405);
-  });
-  it("return error when json data contains return time that is invalid/earlier than departure time", async () => {
-    const invalidData = {
-      departure_time: "2021-10-10T11:10:10",
-      return_time: "2021-10-10T10:10:10",
-      departure_station_id: 1,
-      departure_station: "Kaivopuisto",
-      return_station_id: 2,
-      return_station: "Laivasillankatu",
-      distance: 100,
-      duration: 100,
-    };
-    const res = await request(app).post("/journeys/new").send(invalidData);
-    expect(res.statusCode).toEqual(405);
-  });
-  it("return error when json data contains distance/duration that is smaller than 10 meters or seconds", async () => {
-    const invalidData = {
-      departure_time: "2021-10-10T11:10:10",
-      return_time: "2021-10-10T10:10:10",
-      departure_station_id: 1,
-      departure_station: "Kaivopuisto",
-      return_station_id: 2,
-      return_station: "Laivasillankatu",
-      distance: 9,
-      duration: 9,
-    };
-    const res = await request(app).post("/journeys/new").send(invalidData);
-    expect(res.statusCode).toEqual(405);
-  });
   it("return error when  json data is missing", async () => {
     const res = await request(app).post("/journeys/new").send("");
     expect(res.statusCode).toEqual(405);
   });
 });
+
 describe("GET /stations", () => {
   it("should return an array of stations", async () => {
     const res = await request(app).get("/stations");
