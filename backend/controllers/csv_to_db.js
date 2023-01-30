@@ -40,7 +40,7 @@ async function dbImport(csvResult, query) {
       return this.query(query, csvResult[index]);
     }
   }
-  //mass transactions
+  //mass transaction execution
   await db
     .tx(function () {
       return this.sequence(factory);
@@ -114,7 +114,7 @@ const parseJourneys = () => {
 
 const parseStations = () => {
   let stationStream = fs.createReadStream("./csv/stations.csv");
-  //array that holds parsed csv data
+  //array that holds parsed csv data, redundant fields are omitted
   let csvData = [];
   let csvStream = fastcsv
     .parse({
