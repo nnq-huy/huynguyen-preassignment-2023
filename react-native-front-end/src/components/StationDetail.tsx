@@ -3,7 +3,7 @@ import React from "react";
 import axios from "axios";
 import MapView, { Marker } from "react-native-maps";
 import { View, StyleSheet, ScrollView } from "react-native";
-import { ActivityIndicator, Card, DataTable,Text } from "react-native-paper";
+import { ActivityIndicator, Card, DataTable, Text } from "react-native-paper";
 import backendUrl from "../utils/backend";
 import { Station, StationInfo } from "../utils/types";
 
@@ -93,7 +93,7 @@ const StationDetail = ({ route, navigation }) => {
                   Avg distance of journeys from this station
                 </DataTable.Cell>
                 <DataTable.Cell style={styles.numberCell} numeric>
-                  {(data.avg_starting_dist/1000).toFixed(2)}km
+                  {(data.avg_starting_dist / 1000).toFixed(2)}km
                 </DataTable.Cell>
               </DataTable.Row>
               <DataTable.Row>
@@ -101,24 +101,52 @@ const StationDetail = ({ route, navigation }) => {
                   Avg distance of journeys to this station
                 </DataTable.Cell>
                 <DataTable.Cell style={styles.numberCell} numeric>
-                  {(data.avg_ending_dist/1000).toFixed(2)}km
+                  {(data.avg_ending_dist / 1000).toFixed(2)}km
                 </DataTable.Cell>
               </DataTable.Row>
               <Text variant="titleMedium">
                 Most popular destinations from this station:{" "}
-                {data.most_popular_return[0].return_station},{" "}
-                {data.most_popular_return[1].return_station},{" "}
-                {data.most_popular_return[2].return_station},{" "}
-                {data.most_popular_return[3].return_station},{" "}
-                {data.most_popular_return[4].return_station}
+                {data.most_popular_return.length > 0
+                  ? data.most_popular_return[0].return_station
+                  : ""}
+                ,{" "}
+                {data.most_popular_return.length > 1
+                  ? data.most_popular_return[1].return_station
+                  : ""}
+                ,{" "}
+                {data.most_popular_return.length > 2
+                  ? data.most_popular_return[2].return_station
+                  : ""}
+                ,{" "}
+                {data.most_popular_return.length > 3
+                  ? data.most_popular_return[3].return_station
+                  :""}
+                ,{" "}
+                {data.most_popular_return.length > 4
+                  ? data.most_popular_return[4].return_station
+                  :""}
               </Text>
               <Text variant="titleMedium">
                 Most popular departures to this station:{" "}
-                {data.most_popular_departure[0].departure_station},{" "}
-                {data.most_popular_departure[1].departure_station},{" "}
-                {data.most_popular_departure[2].departure_station},{" "}
-                {data.most_popular_departure[3].departure_station},{" "}
-                {data.most_popular_departure[4].departure_station}
+                {data.most_popular_departure.length > 0
+                  ? data.most_popular_departure[0].departure_station
+                  : ""}
+                ,{" "}
+                {data.most_popular_departure.length > 1
+                  ? data.most_popular_departure[1].departure_station
+                  : ""}
+                ,{" "}
+                {data.most_popular_departure.length > 2
+                  ? data.most_popular_departure[2].departure_station
+                  : ""}
+                ,{" "}
+                {data.most_popular_departure.length > 3
+                  ? data.most_popular_departure[3].departure_station
+                  : ""}
+                ,{" "}
+                {data.most_popular_departure.length > 4
+                  ? data.most_popular_departure[4].departure_station
+                  : ""}
               </Text>
             </DataTable>
           </Card.Content>
