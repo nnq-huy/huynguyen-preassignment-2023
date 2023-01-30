@@ -150,7 +150,7 @@ const HomeScreen = () => {
   return (
     <Provider>
       <View>
-        <Appbar mode="small" safeAreaInsets={{ top }} testID="home-screen-appbar">
+        <Appbar mode="small" safeAreaInsets={{ top }}>
           <Appbar.Content title="Home" />
         </Appbar>
         <View style={styles.container}>
@@ -170,12 +170,10 @@ const HomeScreen = () => {
                     onPress={() => {
                       pushCsvToDb("stations");
                     }}
-                    testID="push-stations-button"
                   >
                     Push to DB
                   </Button>
                 )}
-                testID="upload-new-stations-button"
               />
             </Card>
             <Card  style={styles.card}>

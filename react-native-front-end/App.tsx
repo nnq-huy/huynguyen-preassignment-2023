@@ -36,7 +36,6 @@ export default function App() {
             navigationState={{ index, routes }}
             onIndexChange={setIndex}
             renderScene={renderScene}
-            testID={"bottom-navigation-bar"}
           />
           <StatusBar style="auto" />
         </PaperProvider>
