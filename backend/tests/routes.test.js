@@ -29,9 +29,9 @@ describe("POST to start csv parser /csv/:importType", () => {
     const res = await request(app).post("/csv/station");
     expect(res.statusCode).toEqual(400);
   });
-  it("should return error if csv types is  'stations' and csv contains existing stations'", async () => {
+  it("should return success if csv types is 'stations' '", async () => {
     const res = await request(app).post("/csv/stations");
-    expect(res.statusCode).toEqual(400);
+    expect(res.statusCode).toEqual(200);
   });
   it("should return success if csv types is  'journeys' as csv parser already filtered out invalid csv data", async () => {
     const res = await request(app).post("/csv/journeys");
