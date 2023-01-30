@@ -1,42 +1,64 @@
-# solita-preassignment-2023
+# Solita Dev Academy pre-assignment 2023
 
+## Applicant name :Huy Nguyen
 A repository for Solita Dev Academy 2023 pre-assignment
 
-Applicant name :Nguyen Nhu Quang Huy
 
-Technology stack used:
-    - Back-end: Node.JS with Express
-    - Database: PostgresSQL
-    - Front-end: ReactNative on Android.
 
-## Backend: contains NodeJS server with APIs to access PostgreSQL database. Stations and journeys data are stored on a PostgreSQL running on my linode VPS.
-### Dependencies:
-- body-parser, express
-- fast-csv
-- multer
-- pg, pg-promise, pg-hstore
-- dotenv, cross-env, nodemon
-- jest, supertest
-### To run the backend:
+Technology stack used: Back-end: Node.JS with Express - Database: PostgreSQL. Front-end: ReactNative on Android.
+
+## Backend: 
+
+> <em>A NodeJS server with APIs to access PostgreSQL database. Stations and journeys data are stored on a PostgreSQL running on my linode VPS.<br>
+> Postgres database have 2 tables: stations (id:integer primary key, name: varchar255,address: varchar255,x: real,y: real) and journeys (id:serial primary key,departure_time: timestamp, return_time: timestamp, departure_station_id: integer,departure_station: varchar255, return_station_id: integer, return_station: varchar255, distance: real, duration: real)<br>
+> Sample data was loaded to postgres using backend functions.
+>In the data import process, several stations were not found in the stations data provided in the csv. In order to prevent conflicts, no relationship between two table was set up.</em>
+
+
+### Dependencies
+
+- [`body-parser`](https://www.npmjs.com/package/body-parser) & [`express`](https://www.npmjs.com/package/express): web server framework
+- [`fast-csv`](https://www.npmjs.com/package/fast-csv): CSV Parser and Formatter
+
+- [`multer`](https://www.npmjs.com/package/multer): middleware for uploading files handling
+- [`pg`](https://www.npmjs.com/package/pg), [`pg-promise`](https://www.npmjs.com/package/pg-promise), [`pg-hstore`](https://www.npmjs.com/package/pg-hstore): PostgreSQL client for Node.js
+- [`dotenv`](https://www.npmjs.com/package/dotenv), [`dotenv`](https://www.npmjs.com/package/cross-env), [`nodemon`](https://www.npmjs.com/package/nodemon): loads environment variables from .env file, script monitoring
+- [`jest`](https://www.npmjs.com/package/jest), [`supertest`](https://www.npmjs.com/package/supertest): testing http api calls
+
+### To run the backend
+
 1. Clone the repository, go to <em>backend</em> folder using terminal:
-```
+
+```sh
 git clone https://github.com/nnq-huy/huynguyen-preassignment-2023.git
 cd backend
 ```
+
 2. Install dependencies:
-```
+
+```sh
 npm install
 ```
+
 3. Replace PGPASSWORD in env.dev , env.test with abc123
 4. Run the tests with test database
-```
+
+```sh
 npm test
 ```
+
 5. Run the backend with dev/production database
+
+```sh
+npm start
 ```
-npm start dev
+or
+```sh
+npm start-dev
 ```
+
 API endpoints running on my Linode VPS:
+
 <ul>
 <em>
 <li>GET: http://143.42.29.50:3000/ </li>
@@ -52,62 +74,82 @@ API endpoints running on my Linode VPS:
 
 ## Frontend: a ReactNative application created with Expo, configured to run on Android
 
-### To test the app:
+### To test the app
+
 1. Clone the repository(if backend setup step is skipped), go to react-native-front-end folder using terminal:
-```
+
+```sh
 git clone https://github.com/nnq-huy/huynguyen-preassignment-2023.git
 cd react-native-front-end
 ```
+
 2. Install dependencies:
-```
+
+```sh
 npm install
 ```
+
 3. Start expo metro bundler:
-```
+
+```sh
 npx expo start
 ```
+
 4. Press "a" on terminal to start application on Android Emulator/Android Phone
-## Project folder structure:
+
+### Screenshots:
+![](./assets/HomeScreen.png)
+![](./assets/StationsScreen.png)
+![](./assets/StationDetail.png)
+![](./assets/JourneysScreen.png)
+
+
+## Project folder structure
+
+
 <em>
 
 ```
 backend/
-├─ controllers/
-│  ├─ csv_to_db.js
-│  ├─ db_queries.js
-│  ├─ file_upload.js
-├─ routes/
+├─ controllers/                     # Server functions
+│  ├─ csv_to_db.js                  # CSV parsing and pushing to db functions
+│  ├─ db_queries.js                 # Database queries functions
+│  ├─ file_upload.js                # Files uploading functions
+├─ csv/                             # Sample csv files
+│  ├─ journeys.csv                  # CSV file contains 9 sample journeys records
+│  ├─ stations.csv                  # CSV file with sample station data
+├─ routes/                          # API endpoints routes
 │  ├─ index.js
-├─ tests/
-│  ├─ index.js
-│  ├─ testfile.csv
-│  ├─ validation.test.js
+├─ tests/                           # Test files
+│  ├─ routes.test.js                # API integration tests
+│  ├─ testfile.csv                  # File for uploading test
+│  ├─ validation.test.js            # Data validation for db import tests
 ├─ .gitignore
-├─ index.js
-├─ package.json
+├─ index.js                         # Server entry file
+├─ package.json                     # App information & dependencies
 ```
--React-native-front-end: contains ReactNative application created with Expo, configured to run on Android
 
 ```
 react-native-front-end/
-├─ assets/
-├─ src/
+├─ assets/                          # Expo's default assets
+├─ src/                             # Source files
 │  ├─ components/
-│  │  ├─ StationDetail.tsx
-│  │  ├─ StationList.tsx
+│  │  ├─ StationDetail.tsx          # Station's detail view
+│  │  ├─ StationList.tsx            # Stations list view
 │  ├─ screens/
-│  │  ├─ HomeScreen.tsx
-│  │  ├─ index.ts
-│  │  ├─ JourneyScreen.tsx
-│  │  ├─ StationScreen.tsx
+│  │  ├─ HomeScreen.tsx             # Home screen
+│  │  ├─ index.ts                   # Exported screens
+│  │  ├─ JourneysScreen.tsx         # Journeys list screen
+│  │  ├─ StationsScreen.tsx         # Station screen
 │  ├─ utils/
-│  │  ├─ backend.ts
-│  │  ├─ types.ts
+│  │  ├─ backend.ts                 # Link to backend
+│  │  ├─ types.ts                   # Data types
 ├─ .gitignore
-├─ app.json
-├─ App.tsx
-├─ babel.config.js
-├─ package.json
-├─ tsconfig.json
+├─ app.json                         # App's info
+├─ App.tsx                          # App's main file
+├─ babel.config.js                  # React's babel config
+├─ package.json                     # App's dependencies & configurations
+├─ tsconfig.json                    # TypeScript configuration file
 ```
+
 </em>
