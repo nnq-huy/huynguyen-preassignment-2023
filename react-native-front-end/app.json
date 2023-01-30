@@ -18,13 +18,15 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.quanghuyz.solitacitybikeassignment"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.quanghuyz.solitacitybikeassignment"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -34,6 +36,9 @@
         "projectId": "c75d6a1c-1937-4d5f-b9c0-866ab164bbaa"
       }
     },
-    "owner": "quanghuyz"
+    "owner": "quanghuyz",
+    "plugins": [
+      "@config-plugins/detox"
+    ]
   }
 }
