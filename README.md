@@ -8,3 +8,5 @@ Technology stack used:
     - Back-end: Node.JS with Express
     - Database: PostgresSQL
     - Front-end: ReactNative on Android.
+Project folder structure:
+- 
