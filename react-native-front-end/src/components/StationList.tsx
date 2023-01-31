@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import React from "react";
 import { View, FlatList, Text, StyleSheet } from "react-native";
 import { ActivityIndicator, Avatar, Card } from "react-native-paper";
-import backendUrl from "../utils/backend";
+import BACKEND_URL from "../utils/backend";
 import axios from "axios";
 import { Station } from "../utils/types";
 import { Searchbar } from "react-native-paper";
@@ -70,7 +70,7 @@ const StationList = ({ navigation }) => {
     </Card>
   );
 
-  const { data, loading, error } = useGetStation(backendUrl + "/stations");
+  const { data, loading, error } = useGetStation(BACKEND_URL + "/stations");
 
   if (error) {
     return (

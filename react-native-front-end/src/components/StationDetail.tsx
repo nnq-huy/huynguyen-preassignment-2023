@@ -4,7 +4,7 @@ import axios from "axios";
 import MapView, { Marker } from "react-native-maps";
 import { View, StyleSheet, ScrollView } from "react-native";
 import { ActivityIndicator, Card, DataTable, Text } from "react-native-paper";
-import backendUrl from "../utils/backend";
+import BACKEND_URL from "../utils/backend";
 import { Station, StationInfo } from "../utils/types";
 
 const useGetStationInfo = (url: string) => {
@@ -46,7 +46,7 @@ const emptyStation: StationInfo = {
 const StationDetail = ({ route, navigation }) => {
   const { id, name, address, x, y } = route.params;
   const { data, loading, error } = useGetStationInfo(
-    backendUrl + "/station/id=" + id
+    BACKEND_URL + "/station/id=" + id
   );
   if (error) {
     return (
