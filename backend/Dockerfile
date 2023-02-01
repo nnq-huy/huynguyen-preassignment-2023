@@ -8,11 +8,8 @@ WORKDIR /usr/src/backend
 COPY package*.json ./
 RUN npm install
 #Copy other source files and folders
-COPY index.js ./
-COPY ./controllers ./controllers
-COPY ./csv ./csv
-COPY ./routes ./routes
-COPY .env.* ./
+COPY . .
+
 #expose port 3000 for server
 EXPOSE 3000
 #start commands
