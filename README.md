@@ -11,7 +11,8 @@ Technology stack used: Back-end: Node.JS with Express - Database: PostgreSQL. Fr
 
 > <em>A NodeJS server with APIs to access PostgreSQL database. Stations and journeys data are stored on a PostgreSQL running on my linode VPS.<br>
 > Postgres database have 2 tables: stations (id:integer primary key, name: varchar255,address: varchar255,x: real,y: real) and journeys (id:serial primary key,departure_time: timestamp, return_time: timestamp, departure_station_id: integer,departure_station: varchar255, return_station_id: integer, return_station: varchar255, distance: real, duration: real)<br>
-> Sample data was loaded to postgres using backend functions.
+> Sample data was loaded to postgres using backend functions in 2 databases. citybike_prod: all original imported data. citybike contains original data and new testing related data in the development process.<br>
+> 
 >In the data import process, several stations were not found in the stations data provided in the csv. In order to prevent conflicts, no relationship between two table was set up.</em>
 
 
@@ -25,7 +26,7 @@ Technology stack used: Back-end: Node.JS with Express - Database: PostgreSQL. Fr
 - [`dotenv`](https://www.npmjs.com/package/dotenv), [`dotenv`](https://www.npmjs.com/package/cross-env), [`nodemon`](https://www.npmjs.com/package/nodemon): loads environment variables from .env file, script monitoring
 - [`jest`](https://www.npmjs.com/package/jest), [`supertest`](https://www.npmjs.com/package/supertest): testing http api calls
 
-### To run the backend
+### To run the backend from git
 
 1. Clone the repository, go to <em>backend</em> folder using terminal:
 
@@ -40,7 +41,7 @@ cd backend
 npm install
 ```
 
-3. Replace PGPASSWORD in env.dev , env.test with abc123
+3. Replace PGPASSWORD in env.dev , env.test, env.production with "abc123"
 4. Run the tests with test database
 
 ```sh
@@ -50,13 +51,21 @@ npm test
 5. Run the backend with dev/production database
 
 ```sh
-npm start
+npm start-dev
 ```
 or
 ```sh
-npm start-dev
+npm start
 ```
-
+### To run the backend from docker
+1. Pull docker images
+```sh
+docker pull nnqhuy/citybikebackend:latest
+```
+2. Run the image
+```sh
+docker run -p 3000:3000 nnqhuy/citybikebackend
+```
 API endpoints running on my Linode VPS:
 
 <ul>
@@ -125,6 +134,8 @@ backend/
 │  ├─ testfile.csv                  # File for uploading test
 │  ├─ validation.test.js            # Data validation for db import tests
 ├─ .gitignore
+├─ .dockerignore
+├─ Dockerfile                       # Docker config file
 ├─ index.js                         # Server entry file
 ├─ package.json                     # App information & dependencies
 ```
