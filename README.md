@@ -134,10 +134,14 @@ cd flutter-front-end
 ```sh
 flutter pub get
 ```
-3. Start the debug build on emulator/phone:
+3. Start the debug build on emulator/phone or web
 
 ```sh
 flutter run
+```
+or
+```sh
+flutter run -d chrome
 ```
 
 ## Project folder structure
@@ -189,5 +193,18 @@ react-native-front-end/
 ├─ package.json                     # App's dependencies & configurations
 ├─ tsconfig.json                    # TypeScript configuration file
 ```
-
+```
+flutter-front-end/
+├─ android/                         # Flutter's configs for android
+├─ lib/                             # Source files
+│  ├─ components/                   # Building block widgets
+│  ├─ constants/                    # Link to backend
+│  ├─ helpers/                      # Backend calling functions
+│  ├─ models/                       # Data types
+│  ├─ screens/                      # App's 3 screens
+├─ .gitignore
+├─ test/                            # Tests
+├─ web/                             # Web configs
+├─ pubspec.yaml                     # App's dependencies & configurations
+```
 </em>
