@@ -28,8 +28,6 @@ Technology stack used: Back-end: Node.JS with Express - Database: PostgreSQL. Fr
 
 ### To run the backend from git
 
-### Prerequisites: [Node.JS](https://nodejs.org/en/) , [Docker](https://www.docker.com/) (optional)
-
 1. Clone the repository, go to <em>backend</em> folder using terminal:
 
 ```sh
@@ -84,7 +82,6 @@ API endpoints running on my Linode VPS:
 </ul>
 
 ## Frontend: a ReactNative application created with Expo, configured to run on Android
-### Prerequisites: [Node.JS](https://nodejs.org/en/), [JavaJDK](https://openjdk.org/), [AndroidSDK](https://developer.android.com/studio), Android Emulator/Expo Go app (optional).
 
 ### To test the app
 
