@@ -5,7 +5,8 @@ A repository for Solita Dev Academy 2023 pre-assignment
 
 
 
-Technology stack used: Back-end: Node.JS with Express - Database: PostgreSQL. Front-end: ReactNative and Flutter on Android
+Technology stack used: Back-end: Node.JS with Express - Database: PostgreSQL. Front-end: ReactNative and Flutter on Android.<br>
+Note: the repository contains some api keys & links to private server, they'll be changed after 2 weeks.
 
 ## Backend: 
 
