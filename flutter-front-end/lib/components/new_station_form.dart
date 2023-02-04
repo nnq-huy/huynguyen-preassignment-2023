@@ -208,11 +208,6 @@ class _NewStationFormState extends State<NewStationForm> {
                                 label: const CustomTextWhite('submit'))),
                       ],
                     ),
-                    CustomTextBlack(
-                        _formKey.currentState?.value.toString() ?? 'no value'),
-                    CustomTextBlack(_formKey.currentState?.isValid.toString() ??
-                        'no value'),
-                    CustomTextBlack(station.toJson().toString())
                   ],
                 )),
           ],

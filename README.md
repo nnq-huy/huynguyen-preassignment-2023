@@ -5,7 +5,7 @@ A repository for Solita Dev Academy 2023 pre-assignment
 
 
 
-Technology stack used: Back-end: Node.JS with Express - Database: PostgreSQL. Front-end: ReactNative on Android.
+Technology stack used: Back-end: Node.JS with Express - Database: PostgreSQL. Front-end: ReactNative and Flutter on Android
 
 ## Backend: 
 
@@ -115,6 +115,29 @@ npx expo start
 ![](./assets/StationDetail.png)
 ![](./assets/JourneysScreen.png)
 
+## Frontend: a Flutter application configured to run on Android
+### Prerequisites: [Flutter](https://flutter.dev/) version 3.0 and up, [AndroidSDK](https://developer.android.com/studio), Android Emulator/ Android phone
+
+### To test the app
+
+1. Clone the repository(if backend setup step is skipped), go to flutter-front-end folder using terminal and run the app
+   or download the apk file: https://1drv.ms/u/s!AhUnCCd__w0BjsdrpnizEGApUVCVaQ?e=6Y88vM and install on the emulator/android phone.
+
+```sh
+git clone https://github.com/nnq-huy/huynguyen-preassignment-2023.git
+cd flutter-front-end
+```
+
+1. Install dependencies:
+
+```sh
+flutter pub get
+```
+3. Start the debug build on emulator/phone:
+
+```sh
+flutter run
+```
 
 ## Project folder structure
 
